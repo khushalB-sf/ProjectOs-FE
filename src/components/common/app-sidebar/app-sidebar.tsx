@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 
 import { cn, getInitials } from "@/lib/utils";
 import { useProject } from "@/contexts/useProject";
+import { useMeetings } from "@/hooks/meetings/queries";
 import { useProposal } from "@/hooks/proposal/queries";
 import { useRequirements } from "@/hooks/requirements/queries";
 import { LABELS } from "@/constants/labels";
@@ -25,12 +26,16 @@ function resolveBadge(
   item: NavItemConfig,
   requirementsCount: number | undefined,
   proposalBadge: NavBadge | undefined,
+  meetingsCount: number | undefined,
 ) {
   if (item.to === ROUTES.REQUIREMENTS && requirementsCount !== undefined) {
     return { label: String(requirementsCount), tone: "primary" as const };
   }
   if (item.to === ROUTES.PROPOSAL && proposalBadge) {
     return proposalBadge;
+  }
+  if (item.to === ROUTES.MEETINGS && meetingsCount !== undefined) {
+    return { label: String(meetingsCount), tone: "medium" as const };
   }
   return item.badge;
 }
@@ -40,9 +45,11 @@ function isBadgeLoading(
   item: NavItemConfig,
   isRequirementsLoading: boolean,
   isProposalLoading: boolean,
+  isMeetingsLoading: boolean,
 ) {
   if (item.to === ROUTES.REQUIREMENTS) return isRequirementsLoading;
   if (item.to === ROUTES.PROPOSAL) return isProposalLoading;
+  if (item.to === ROUTES.MEETINGS) return isMeetingsLoading;
   return false;
 }
 
@@ -66,6 +73,8 @@ function AppSidebar({ onLogout }: AppSidebarProps) {
     useRequirements(projectId);
   const { data: proposalResponse, isLoading: isProposalLoading } =
     useProposal(projectId);
+  const { data: meetings, isLoading: isMeetingsLoading } =
+    useMeetings(projectId);
   const proposal = proposalResponse ? toProposal(proposalResponse) : undefined;
   const proposalBadge: NavBadge | undefined = proposal
     ? { label: proposal.statusLabel, tone: proposal.statusTone }
@@ -91,11 +100,17 @@ function AppSidebar({ onLogout }: AppSidebarProps) {
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-3">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
-          const badge = resolveBadge(item, requirements?.length, proposalBadge);
+          const badge = resolveBadge(
+            item,
+            requirements?.length,
+            proposalBadge,
+            meetings?.length,
+          );
           const loading = isBadgeLoading(
             item,
             isRequirementsLoading,
             isProposalLoading,
+            isMeetingsLoading,
           );
           return (
             <NavLink

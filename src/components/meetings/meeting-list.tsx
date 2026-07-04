@@ -3,15 +3,18 @@ import { Plus } from "lucide-react";
 import { StatusBadge } from "@/components/common/status-badge/status-badge";
 import { Button } from "@/components/ui/button";
 import { LABELS } from "@/constants/labels";
-import { MEETINGS } from "@/constants/meetings/mock";
 import { cn } from "@/lib/utils";
-
-import type { MeetingSummary } from "@/types/meetings";
+import {
+  toMeetingSummary,
+  type MeetingResponse,
+  type MeetingSummary,
+} from "@/types/meetings";
 
 const MEETINGS_LABELS = LABELS.MEETINGS;
 
 interface MeetingListProps {
-  selectedId: string;
+  meetings: MeetingResponse[];
+  selectedId: string | undefined;
   isNewMode: boolean;
   onSelect: (id: string) => void;
   onNew: () => void;
@@ -49,6 +52,7 @@ function MeetingListItem({
 }
 
 function MeetingList({
+  meetings,
   selectedId,
   isNewMode,
   onSelect,
@@ -68,10 +72,10 @@ function MeetingList({
         aria-label={MEETINGS_LABELS.LIST.ARIA_LABEL}
         className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
       >
-        {MEETINGS.map((meeting) => (
+        {meetings.map((meeting) => (
           <MeetingListItem
             key={meeting.id}
-            meeting={meeting}
+            meeting={toMeetingSummary(meeting)}
             isActive={!isNewMode && meeting.id === selectedId}
             onSelect={onSelect}
           />

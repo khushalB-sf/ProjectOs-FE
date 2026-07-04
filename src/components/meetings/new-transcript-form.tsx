@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Zap } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { LABELS } from "@/constants/labels";
+import { useCreateMeeting } from "@/hooks/meetings/mutations";
+import {
+  meetingCreateSchema,
+  type MeetingCreateFormValues,
+} from "@/schemas/meetings";
 
 const MEETINGS_LABELS = LABELS.MEETINGS;
 
-const PROCESSING_DELAY_MS = 3000;
 const SHIMMER_WIDTHS = ["w-full", "w-5/6", "w-4/6"];
 
 interface NewTranscriptFormProps {
+  projectId: string;
   onCancel: () => void;
   onProcessed: () => void;
 }
@@ -43,18 +56,33 @@ function ProcessingState() {
   );
 }
 
-function NewTranscriptForm({ onCancel, onProcessed }: NewTranscriptFormProps) {
-  const [isProcessing, setIsProcessing] = useState(false);
+function NewTranscriptForm({
+  projectId,
+  onCancel,
+  onProcessed,
+}: NewTranscriptFormProps) {
+  const form = useForm<MeetingCreateFormValues>({
+    resolver: zodResolver(meetingCreateSchema),
+    defaultValues: {
+      title: "",
+      raw_transcript: "",
+    },
+  });
+  const { mutate: createMeeting, isPending } = useCreateMeeting(projectId);
 
-  const handleProcess = () => {
-    setIsProcessing(true);
-    window.setTimeout(() => {
-      setIsProcessing(false);
-      onProcessed();
-    }, PROCESSING_DELAY_MS);
-  };
+  const handleSubmit = form.handleSubmit((values) => {
+    createMeeting(
+      { title: values.title, raw_transcript: values.raw_transcript },
+      {
+        onSuccess: () => {
+          form.reset();
+          onProcessed();
+        },
+      },
+    );
+  });
 
-  if (isProcessing) {
+  if (isPending) {
     return (
       <div className="flex-1">
         <ProcessingState />
@@ -73,26 +101,62 @@ function NewTranscriptForm({ onCancel, onProcessed }: NewTranscriptFormProps) {
         </p>
       </div>
 
-      <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <Input placeholder={MEETINGS_LABELS.NEW.TITLE_PLACEHOLDER} />
-        <Textarea
-          rows={10}
-          placeholder={MEETINGS_LABELS.NEW.TRANSCRIPT_PLACEHOLDER}
-        />
-        <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            {MEETINGS_LABELS.ACTIONS.CANCEL}
-          </Button>
-          <Button
-            type="button"
-            onClick={handleProcess}
-            className="bg-indigo-600 text-white hover:bg-indigo-700"
-          >
-            <Zap className="size-4" aria-hidden="true" />
-            {MEETINGS_LABELS.ACTIONS.PROCESS_WITH_AI}
-          </Button>
-        </div>
-      </div>
+      <Form {...form}>
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    placeholder={MEETINGS_LABELS.NEW.TITLE_PLACEHOLDER}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="raw_transcript"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Textarea
+                    rows={10}
+                    placeholder={MEETINGS_LABELS.NEW.TRANSCRIPT_PLACEHOLDER}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex items-center justify-end gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              disabled={isPending}
+            >
+              {MEETINGS_LABELS.ACTIONS.CANCEL}
+            </Button>
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="bg-indigo-600 text-white hover:bg-indigo-700"
+            >
+              <Zap className="size-4" aria-hidden="true" />
+              {MEETINGS_LABELS.ACTIONS.PROCESS_WITH_AI}
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }

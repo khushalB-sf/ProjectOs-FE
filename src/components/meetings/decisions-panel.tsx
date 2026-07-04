@@ -1,8 +1,9 @@
 import { CheckCircle2 } from "lucide-react";
 
-import { DECISIONS } from "@/constants/meetings/mock";
+import { LABELS } from "@/constants/labels";
+import { toDecision, type Decision } from "@/types/meetings";
 
-import type { Decision } from "@/types/meetings";
+const MEETINGS_LABELS = LABELS.MEETINGS;
 
 function DecisionCard({ decision }: { decision: Decision }) {
   return (
@@ -13,20 +14,39 @@ function DecisionCard({ decision }: { decision: Decision }) {
         </span>
         <div className="space-y-1">
           <p className="text-sm font-medium text-slate-900">{decision.title}</p>
-          <p className="text-xs text-slate-500">{decision.attribution}</p>
-          <p className="text-xs text-slate-500">{decision.rationale}</p>
+          {decision.attribution && (
+            <p className="text-xs text-slate-500">{decision.attribution}</p>
+          )}
+          {decision.rationale && (
+            <p className="text-xs text-slate-500">
+              {MEETINGS_LABELS.DECISIONS.RATIONALE_PREFIX} {decision.rationale}
+            </p>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function DecisionsPanel() {
+interface DecisionsPanelProps {
+  decisions: unknown[];
+}
+
+function DecisionsPanel({ decisions }: DecisionsPanelProps) {
+  if (decisions.length === 0) {
+    return (
+      <p className="text-sm text-slate-400">
+        {MEETINGS_LABELS.DECISIONS.EMPTY}
+      </p>
+    );
+  }
+
   return (
     <div className="space-y-3">
-      {DECISIONS.map((decision) => (
-        <DecisionCard key={decision.id} decision={decision} />
-      ))}
+      {decisions.map((raw, index) => {
+        const decision = toDecision(raw, index);
+        return <DecisionCard key={decision.id} decision={decision} />;
+      })}
     </div>
   );
 }
