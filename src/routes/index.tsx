@@ -8,6 +8,11 @@ import { ROUTES } from "@/constants/routes";
 import { PageFallback } from "./page-fallback";
 
 const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
+const RegisterPage = lazy(() => import("@/pages/auth/RegisterPage"));
+const ForgotPasswordPage = lazy(
+  () => import("@/pages/auth/ForgotPasswordPage"),
+);
+const ResetPasswordPage = lazy(() => import("@/pages/auth/ResetPasswordPage"));
 const DashboardPage = lazy(() => import("@/pages/dashboard/DashboardPage"));
 const RequirementsPage = lazy(
   () => import("@/pages/requirements/RequirementsPage"),
@@ -24,6 +29,12 @@ function withSuspense(node: React.ReactNode) {
 
 export const router = createBrowserRouter([
   { path: ROUTES.LOGIN, element: withSuspense(<LoginPage />) },
+  { path: ROUTES.REGISTER, element: withSuspense(<RegisterPage />) },
+  {
+    path: ROUTES.FORGOT_PASSWORD,
+    element: withSuspense(<ForgotPasswordPage />),
+  },
+  { path: ROUTES.RESET_PASSWORD, element: withSuspense(<ResetPasswordPage />) },
   {
     element: <RequireAuth />,
     children: [
