@@ -26,4 +26,14 @@ function NavBadgeChip({ badge }: { badge: NavBadge }) {
   );
 }
 
-export { NavBadgeChip };
+/** Pulsing placeholder shown in place of a nav badge while its data is loading. */
+function NavBadgeSkeleton() {
+  return (
+    <span
+      className="ml-auto h-4 w-8 animate-pulse rounded-full bg-slate-700"
+      aria-hidden="true"
+    />
+  );
+}
+
+export { NavBadgeChip, NavBadgeSkeleton };

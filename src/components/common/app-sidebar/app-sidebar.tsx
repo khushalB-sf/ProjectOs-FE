@@ -3,12 +3,14 @@ import { NavLink } from "react-router-dom";
 
 import { cn, getInitials } from "@/lib/utils";
 import { useProject } from "@/contexts/useProject";
+import { useProposal } from "@/hooks/proposal/queries";
 import { useRequirements } from "@/hooks/requirements/queries";
 import { LABELS } from "@/constants/labels";
-import { NAV_ITEMS, type NavItemConfig } from "@/constants/nav";
+import { NAV_ITEMS, type NavBadge, type NavItemConfig } from "@/constants/nav";
 import { ROUTES } from "@/constants/routes";
+import { toProposal } from "@/types/proposal";
 
-import { NavBadgeChip } from "./nav-badge-chip";
+import { NavBadgeChip, NavBadgeSkeleton } from "./nav-badge-chip";
 import { ProjectSwitcher } from "./project-switcher";
 
 interface AppSidebarProps {
@@ -22,17 +24,52 @@ interface AppSidebarProps {
 function resolveBadge(
   item: NavItemConfig,
   requirementsCount: number | undefined,
+  proposalBadge: NavBadge | undefined,
 ) {
   if (item.to === ROUTES.REQUIREMENTS && requirementsCount !== undefined) {
     return { label: String(requirementsCount), tone: "primary" as const };
   }
+  if (item.to === ROUTES.PROPOSAL && proposalBadge) {
+    return proposalBadge;
+  }
   return item.badge;
+}
+
+/** Whether the nav item's live badge data is still on its first fetch. */
+function isBadgeLoading(
+  item: NavItemConfig,
+  isRequirementsLoading: boolean,
+  isProposalLoading: boolean,
+) {
+  if (item.to === ROUTES.REQUIREMENTS) return isRequirementsLoading;
+  if (item.to === ROUTES.PROPOSAL) return isProposalLoading;
+  return false;
+}
+
+/** Renders the nav item's badge slot: loading skeleton, live/static badge, or nothing. */
+function NavItemBadge({
+  loading,
+  badge,
+}: {
+  loading: boolean;
+  badge: NavBadge | undefined;
+}) {
+  if (loading) return <NavBadgeSkeleton />;
+  if (badge) return <NavBadgeChip badge={badge} />;
+  return null;
 }
 
 function AppSidebar({ onLogout }: AppSidebarProps) {
   const nav = LABELS.NAV;
   const { projectId } = useProject();
-  const { data: requirements } = useRequirements(projectId);
+  const { data: requirements, isLoading: isRequirementsLoading } =
+    useRequirements(projectId);
+  const { data: proposalResponse, isLoading: isProposalLoading } =
+    useProposal(projectId);
+  const proposal = proposalResponse ? toProposal(proposalResponse) : undefined;
+  const proposalBadge: NavBadge | undefined = proposal
+    ? { label: proposal.statusLabel, tone: proposal.statusTone }
+    : undefined;
 
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-slate-800 bg-slate-900">
@@ -54,7 +91,12 @@ function AppSidebar({ onLogout }: AppSidebarProps) {
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-3">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
-          const badge = resolveBadge(item, requirements?.length);
+          const badge = resolveBadge(item, requirements?.length, proposalBadge);
+          const loading = isBadgeLoading(
+            item,
+            isRequirementsLoading,
+            isProposalLoading,
+          );
           return (
             <NavLink
               key={item.to}
@@ -70,7 +112,7 @@ function AppSidebar({ onLogout }: AppSidebarProps) {
             >
               <Icon className="h-4 w-4 shrink-0" />
               {item.label}
-              {badge ? <NavBadgeChip badge={badge} /> : null}
+              <NavItemBadge loading={loading} badge={badge} />
             </NavLink>
           );
         })}

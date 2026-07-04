@@ -48,14 +48,14 @@ export const NAV_ITEMS: NavItemConfig[] = [
     label: "Requirements",
     icon: FileText,
     title: "Requirement Intelligence",
-    badge: { label: "24", tone: "primary" },
+    badge: { label: "", tone: "primary" },
   },
   {
     to: ROUTES.PROPOSAL,
     label: "Proposal",
     icon: FileStack,
     title: "Proposal & Estimation",
-    badge: { label: "Ready", tone: "low" },
+    badge: { label: "", tone: "low" },
   },
   {
     to: ROUTES.PLANNER,
