@@ -6,40 +6,81 @@ export const PROPOSAL_LABELS = {
     UPDATE_SUCCESS: "Proposal updated successfully.",
     UPDATE_ERROR: "Failed to update proposal.",
   },
+  PAGE: {
+    NO_PROJECT_TITLE: "No project selected",
+    NO_PROJECT_DESCRIPTION: "Select a project to view its proposal.",
+    LOAD_ERROR: "Failed to load proposal.",
+  },
+  EMPTY: {
+    TITLE: "No proposal yet",
+    DESCRIPTION: "Generate an AI-drafted technical proposal for this project.",
+  },
   HEADER: {
-    GENERATED_BADGE: "Generated Jun 22, 2026",
-    REVISION_META: "v1.2 — reviewed by Alex",
     EDIT: "Edit Proposal",
     EXPORT: "Export PDF",
+    EXPORTING: "Exporting…",
+    EXPORT_ERROR: "Failed to export proposal as PDF.",
+    GENERATE: "Generate Proposal",
+    GENERATING: "Generating…",
+  },
+  ASK_AI_DIALOG: {
+    TITLE: "Ask AI to update proposal",
+    DESCRIPTION_PLACEHOLDER:
+      "Describe which section or field you'd like AI to update...",
+    CANCEL: "Cancel",
+    SUBMIT: "Update Proposal",
+    UNAVAILABLE: "AI-assisted editing isn't available yet.",
   },
   DOCUMENT: {
     EYEBROW: "Technical Proposal",
-    TITLE: "TechFlow Smart Logistics Platform",
-    SUBTITLE: "Prepared by Simform Solutions · June 22, 2026",
+    SUBTITLE_PREPARED_BY: "Prepared by Simform Solutions",
   },
   EXECUTIVE_SUMMARY: {
     TITLE: "Executive Summary",
-    PARAGRAPH_ONE:
-      "TechFlow Logistics operates a fleet of 450 vehicles supporting B2B and B2C last-mile delivery across 12 metropolitan areas, generating $45M in annual revenue. The current manual dispatch system is a bottleneck — average route planning takes 45 minutes per dispatcher shift, and the lack of real-time visibility leads to a 12% on-time delivery failure rate.",
-    PARAGRAPH_TWO:
-      "Simform proposes a cloud-native logistics platform featuring AI-powered route optimization, real-time GPS tracking, a driver mobile app, and a business intelligence dashboard. The solution will reduce route planning time by 80% and improve on-time delivery to above 96%.",
+    EMPTY: "No executive summary provided yet.",
+  },
+  TECHNICAL_APPROACH: {
+    TITLE: "Technical Approach",
+    EMPTY: "No technical approach provided yet.",
   },
   ARCHITECTURE: {
     TITLE: "Proposed Architecture",
+    RATIONALE_LABEL: "Rationale",
+    COMPONENTS_LABEL: "Components",
+    EMPTY: "Architecture details are not available yet.",
   },
-  TECH_STACK: {
-    TITLE: "Recommended Technology Stack",
+  TEAM_COMPOSITION: {
+    TITLE: "Team Composition",
+    EMPTY: "Team composition is not available yet.",
   },
-  COST_ESTIMATE: {
+  TIMELINE: {
+    TITLE: "Timeline",
+    EMPTY: "Timeline is not available yet.",
+    DURATION_VALUE: (weeks: number) => `${weeks} week${weeks === 1 ? "" : "s"}`,
+  },
+  COST_BREAKDOWN: {
     TITLE: "Effort & Cost Estimate",
+    EMPTY: "Cost breakdown is not available yet.",
     COLUMN_ROLE: "Role",
-    COLUMN_PEOPLE: "People",
+    COLUMN_MODULE: "Module",
     COLUMN_DAYS: "Days",
     COLUMN_RATE: "Rate / Day",
     COLUMN_TOTAL: "Total",
     TOTAL_ROW_LABEL: "Total Engagement Cost",
-    TOTAL_ROW_VALUE: "$485,000",
-    FOOTNOTE:
-      "* Includes 10% buffer for scope changes. AWS infrastructure costs estimated separately at $8–12K/month.",
+    PENDING: "Pending",
+    TOTAL_DAYS_VALUE: (days: number) => `${days} days`,
+  },
+  RISKS: {
+    TITLE: "Risks",
+    EMPTY: "No risks identified yet.",
+    IMPACT_LABEL: "impact",
+    PROBABILITY_LABEL: "probability",
+  },
+  STATUS: {
+    DRAFT: "Draft",
+    GENERATING: "Generating",
+    COMPLETED: "Completed",
+    APPROVED: "Approved",
+    FAILED: "Failed",
   },
 } as const;

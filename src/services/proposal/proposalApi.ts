@@ -1,12 +1,16 @@
 import api from "@/services/api";
 import { ENDPOINTS } from "@/constants/endpoints";
 
-import type { ProposalResponse, ProposalUpdate } from "@/types/proposal";
+import type {
+  ProposalGenerationTask,
+  ProposalResponse,
+  ProposalUpdate,
+} from "@/types/proposal";
 
 export const proposalApi = {
-  generateProposal: (projectId: string): Promise<unknown> =>
+  generateProposal: (projectId: string): Promise<ProposalGenerationTask> =>
     api
-      .post<unknown>(ENDPOINTS.PROPOSAL.GENERATE(projectId))
+      .post<ProposalGenerationTask>(ENDPOINTS.PROPOSAL.GENERATE(projectId))
       .then((r) => r.data),
 
   getProposal: (projectId: string): Promise<ProposalResponse> =>
