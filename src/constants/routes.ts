@@ -12,7 +12,3 @@ export const ROUTES = {
   RISK: "/risk",
   RESOURCES: "/resources",
 } as const;
-
-export const STORAGE_KEYS = {
-  IS_AUTHENTICATED: "projectos.isAuthenticated",
-} as const;

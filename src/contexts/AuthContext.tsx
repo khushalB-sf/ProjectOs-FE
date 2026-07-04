@@ -1,10 +1,14 @@
 import * as React from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
-import { STORAGE_KEYS } from "@/constants/routes";
+import { setUnauthorizedHandler } from "@/services/api";
+import { tokenStorage } from "@/lib/token-storage";
+
+import type { AuthTokens } from "@/types/auth";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
-  login: () => void;
+  login: (tokens: AuthTokens) => void;
   logout: () => void;
 }
 
@@ -12,31 +16,30 @@ const AuthContext = React.createContext<AuthContextValue | undefined>(
   undefined,
 );
 
-function readInitialAuth(): boolean {
-  try {
-    return localStorage.getItem(STORAGE_KEYS.IS_AUTHENTICATED) === "true";
-  } catch {
-    return false;
-  }
-}
-
 /**
- * AuthProvider — lightweight client-only auth for the prototype. Persists an
- * `isAuthenticated` flag in localStorage. No backend call in this pass.
+ * AuthProvider — persists Bearer tokens via tokenStorage and registers the 401
+ * handler that the Axios instance calls to force a logout.
  */
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] =
-    React.useState<boolean>(readInitialAuth);
+  const queryClient = useQueryClient();
+  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(() =>
+    Boolean(tokenStorage.getAccessToken()),
+  );
 
-  const login = React.useCallback(() => {
-    localStorage.setItem(STORAGE_KEYS.IS_AUTHENTICATED, "true");
+  const logout = React.useCallback(() => {
+    tokenStorage.clear();
+    setIsAuthenticated(false);
+    queryClient.clear();
+  }, [queryClient]);
+
+  const login = React.useCallback((tokens: AuthTokens) => {
+    tokenStorage.setTokens(tokens.accessToken, tokens.refreshToken);
     setIsAuthenticated(true);
   }, []);
 
-  const logout = React.useCallback(() => {
-    localStorage.removeItem(STORAGE_KEYS.IS_AUTHENTICATED);
-    setIsAuthenticated(false);
-  }, []);
+  React.useEffect(() => {
+    setUnauthorizedHandler(logout);
+  }, [logout]);
 
   const value = React.useMemo(
     () => ({ isAuthenticated, login, logout }),

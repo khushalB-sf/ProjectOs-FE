@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Zap } from "lucide-react";
+import { Loader2, Zap } from "lucide-react";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/useAuth";
+import { useLogin } from "@/hooks/auth/mutations";
+import { getErrorMessage } from "@/lib/utils";
 import { LABELS } from "@/constants/labels";
 import { ROUTES } from "@/constants/routes";
 
@@ -12,13 +15,24 @@ const auth = LABELS.AUTH;
 function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { mutate: signIn, isPending } = useLogin();
   const [email, setEmail] = useState<string>(auth.DEMO_EMAIL);
   const [password, setPassword] = useState<string>(auth.DEMO_PASSWORD);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    login();
-    navigate(ROUTES.DASHBOARD, { replace: true });
+    signIn(
+      { email, password },
+      {
+        onSuccess: (tokens) => {
+          login(tokens);
+          navigate(ROUTES.DASHBOARD, { replace: true });
+        },
+        onError: (error) => {
+          toast.error(getErrorMessage(error, auth.LOGIN_ERROR));
+        },
+      },
+    );
   };
 
   return (
@@ -71,9 +85,20 @@ function LoginPage() {
             </div>
             <Button
               type="submit"
+              disabled={isPending}
               className="mt-2 w-full bg-indigo-600 py-3 font-semibold text-white hover:bg-indigo-500"
             >
-              {auth.SIGN_IN}
+              {isPending ? (
+                <>
+                  <Loader2
+                    className="h-4 w-4 animate-spin"
+                    aria-hidden="true"
+                  />
+                  {auth.SIGNING_IN}
+                </>
+              ) : (
+                auth.SIGN_IN
+              )}
             </Button>
           </form>
           <p className="mt-5 text-center text-xs text-slate-500">

@@ -2,13 +2,16 @@ import { RouterProvider } from "react-router-dom";
 
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ProjectProvider } from "@/contexts/ProjectContext";
 
 import { router } from "./routes";
 
 function App() {
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <ProjectProvider>
+        <RouterProvider router={router} />
+      </ProjectProvider>
       <Toaster />
     </AuthProvider>
   );
