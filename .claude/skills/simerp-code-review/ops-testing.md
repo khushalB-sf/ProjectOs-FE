@@ -12,6 +12,7 @@
 - No Redux, MobX, Zustand unless explicitly approved.
 
 **Flag if:**
+
 - `const [data, setData] = useState(queryData)` — server data copied into local state.
 - A new context introduced for component-local state.
 - Context value not wrapped in `useMemo`.
@@ -29,6 +30,7 @@
 - Debounce search inputs: `useDebounce(value, 300)`.
 
 **Flag if:**
+
 - `useMemo` applied to a trivial expression.
 - `useEffect` depends on an object reference that could be a primitive.
 - A search input dispatches on every keystroke without debounce.
@@ -47,6 +49,7 @@
 - Client-side guards are for UX — server-side enforcement is assumed.
 
 **Flag if:**
+
 - A new Axios instance created outside `src/services/api.ts`.
 - Sensitive data in `console.log` or stored in localStorage beyond authorized `STORAGE_KEYS`.
 - `dangerouslySetInnerHTML` used without sanitization.
@@ -64,6 +67,7 @@
 - Tests co-located: `fileName.test.ts` next to `fileName.ts`.
 
 **Flag if:**
+
 - A component test renders without `renderWithProviders`.
 - Hooks or internal state mocked instead of service functions.
 - Only the happy path tested — error and edge cases missing.
@@ -73,19 +77,19 @@
 
 ## 5. ESLint & Formatting
 
-| Rule | Level | Note |
-|---|---|---|
-| `@typescript-eslint/no-explicit-any` | error | Use `unknown` + narrowing |
-| `no-console` | error | Use Sentry / Sonner |
-| `max-lines` | error (300) | Excludes blanks + comments |
-| `complexity` | warn @ 15 | |
-| `max-depth` | warn @ 4 | |
-| `max-params` | warn @ 4 | |
-| `no-param-reassign` | error | Exceptions: `state`, `draft`, `config` |
-| `prefer-const` | error | |
-| `no-duplicate-imports` | error | |
-| `no-nested-ternary` | warn | |
-| `@typescript-eslint/naming-convention` | error | PascalCase for types/interfaces |
+| Rule                                   | Level       | Note                                   |
+| -------------------------------------- | ----------- | -------------------------------------- |
+| `@typescript-eslint/no-explicit-any`   | error       | Use `unknown` + narrowing              |
+| `no-console`                           | error       | Use Sentry / Sonner                    |
+| `max-lines`                            | error (300) | Excludes blanks + comments             |
+| `complexity`                           | warn @ 15   |                                        |
+| `max-depth`                            | warn @ 4    |                                        |
+| `max-params`                           | warn @ 4    |                                        |
+| `no-param-reassign`                    | error       | Exceptions: `state`, `draft`, `config` |
+| `prefer-const`                         | error       |                                        |
+| `no-duplicate-imports`                 | error       |                                        |
+| `no-nested-ternary`                    | warn        |                                        |
+| `@typescript-eslint/naming-convention` | error       | PascalCase for types/interfaces        |
 
 Prettier: 4-space indent, single quotes, 140 print width, trailing commas, bracket spacing, arrow parens always, LF line endings.
 

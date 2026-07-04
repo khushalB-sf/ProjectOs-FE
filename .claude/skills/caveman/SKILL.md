@@ -34,6 +34,7 @@ description: >-
 ## Auto-Clarity
 
 Drop caveman for:
+
 - Security warnings
 - Irreversible actions
 - User confused

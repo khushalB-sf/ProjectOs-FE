@@ -2,28 +2,33 @@
 
 ## 1. State Types & Where They Live
 
-| State type | Tool | Location |
-|---|---|---|
-| Server / remote data | TanStack React Query | `src/hooks/<module>/` |
-| Auth | `AuthProvider` / `useAuth()` | `src/contexts/AuthContext.tsx` |
-| Permissions | CASL `useAbility()` | `src/components/common/ability-provider/` + `src/hooks/permissions/` |
-| Feature flags | `useFeatureFlag()` / `<FeatureFlag>` | `src/lib/feature-flags/` |
-| Ephemeral UI | `useState` | local to component |
-| Shared/persisted filters | URL search params | component + router |
+| State type               | Tool                                 | Location                                                             |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------------------- |
+| Server / remote data     | TanStack React Query                 | `src/hooks/<module>/`                                                |
+| Auth                     | `AuthProvider` / `useAuth()`         | `src/contexts/AuthContext.tsx`                                       |
+| Permissions              | CASL `useAbility()`                  | `src/components/common/ability-provider/` + `src/hooks/permissions/` |
+| Feature flags            | `useFeatureFlag()` / `<FeatureFlag>` | `src/lib/feature-flags/`                                             |
+| Ephemeral UI             | `useState`                           | local to component                                                   |
+| Shared/persisted filters | URL search params                    | component + router                                                   |
 
 ## 2. React Query Key Management
 
 - Centralize all keys in `src/constants/queryKeys.ts`.
 
   ```ts
-  import { EMPLOYEE_QUERY_KEYS } from '@/constants/queryKeys';
-  useQuery({ queryKey: EMPLOYEE_QUERY_KEYS.EMPLOYEES, queryFn: fetchEmployees });
+  import { EMPLOYEE_QUERY_KEYS } from "@/constants/queryKeys";
+  useQuery({
+    queryKey: EMPLOYEE_QUERY_KEYS.EMPLOYEES,
+    queryFn: fetchEmployees,
+  });
   ```
 
 - Invalidate via `useQueryClient()` in mutation `onSuccess`:
 
   ```ts
-  void queryClient.invalidateQueries({ queryKey: EMPLOYEE_QUERY_KEYS.EMPLOYEES });
+  void queryClient.invalidateQueries({
+    queryKey: EMPLOYEE_QUERY_KEYS.EMPLOYEES,
+  });
   ```
 
 ## 3. Context Guidelines

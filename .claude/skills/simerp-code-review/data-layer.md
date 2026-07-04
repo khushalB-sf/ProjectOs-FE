@@ -22,6 +22,7 @@
 - `getErrorMessage` imported from `@/lib/utils` — never redefined locally.
 
 **Flag if:**
+
 - `invalidateQueries` called without `void` prefix (floating promise).
 - A mutation does not invalidate any query on success.
 - Toast messages are hardcoded strings instead of `LABELS.*`.
@@ -39,6 +40,7 @@
 - File naming: `src/services/<module>/<module>Api.ts`.
 
 **Flag if:**
+
 - A new Axios instance is created per module.
 - `fetch()` or `XMLHttpRequest` is used.
 - A service function transforms/filters/conditionally processes data beyond unwrapping.
@@ -58,6 +60,7 @@
 - Shared date refinement logic extracted as a named function if used in multiple schemas.
 
 **Flag if:**
+
 - A schema uses inline string messages instead of `LABELS.*`.
 - An inferred type is missing for a schema.
 - String fields lack a `.max()` constraint.
@@ -74,6 +77,7 @@
 - Server field errors via `applyServerErrors()` from `@/lib/form-utils.ts`.
 
 **Flag if:**
+
 - Uncontrolled inputs or `useState` manage form field values.
 - `FormMessage` is missing for a field.
 - Default values are inline object literals inside the component.

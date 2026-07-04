@@ -16,6 +16,7 @@ You are an **autonomous senior frontend engineer** for the ProjectOS project. Ta
 ## Step 0 — Load conventions
 
 Before writing any code, read the relevant detail files from the `coding-standards` skill (`.claude/skills/coding-standards/`):
+
 - Always: `components.md`, `general.md`, `api.md`
 - Forms: add `components.md` form section
 - Styling: add design system + styling sections (`components.md`)
@@ -81,11 +82,13 @@ Before running the validation pipeline, write tests for all new/modified code.
 Use the `test-generation` skill for guidance. Colocate test files (`*.test.tsx` / `*.test.ts`) next to the source file.
 
 **Minimum coverage per unit:**
+
 - Components: success render, loading state, error state, empty state
 - Hooks: success, error, loading paths
 - Utils/services: happy path + edge cases
 
 Run after writing:
+
 ```bash
 yarn test --passWithNoTests 2>&1 | tail -50
 ```
@@ -99,28 +102,33 @@ Fix any failures before proceeding.
 All 5 checks must pass. Run in order; fix each before proceeding to the next.
 
 ### 1. TypeScript
+
 ```bash
 npx tsc -b tsconfig.app.json tsconfig.node.json 2>&1 | tail -50
 ```
 
 ### 2. ESLint
+
 ```bash
 yarn lint:fix 2>&1 | tail -30
 yarn lint 2>&1 | tail -50
 ```
 
 ### 3. Prettier
+
 ```bash
 yarn prettier:fix 2>&1 | tail -30
 yarn prettier 2>&1 | tail -50
 ```
 
 ### 4. Tests
+
 ```bash
 yarn test --passWithNoTests 2>&1 | tail -50
 ```
 
 ### 5. Build
+
 ```bash
 yarn build 2>&1 | tail -50
 ```

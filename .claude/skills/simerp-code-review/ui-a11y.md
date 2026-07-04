@@ -9,6 +9,7 @@
 - Named exports for shared components; default exports acceptable for route-level pages.
 
 **Flag if:**
+
 - A presentational component calls a hook that fetches data.
 - New code composes `className` via string concatenation/template literals instead of `cn()`.
 - Files in `src/components/ui/` are modified.
@@ -26,6 +27,7 @@
 - No arbitrary Tailwind values (`[value]` syntax) when a design token exists.
 
 **Flag if:**
+
 - `style={{}}` used for a static value.
 - A hardcoded hex color appears outside `src/index.css`.
 - `className` uses string interpolation instead of `cn()`.
@@ -46,6 +48,7 @@
 - Color must not be the sole indicator of state — pair with icon or text.
 
 **Flag if:**
+
 - `<div>` or `<span>` has an `onClick` handler.
 - An icon in a button is missing `aria-hidden="true"`.
 - An icon-only button is missing `aria-label`.

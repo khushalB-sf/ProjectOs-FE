@@ -13,19 +13,19 @@ Covers: project conventions, testing, performance, security.
 
 ### ESLint Rules (Key)
 
-| Rule | Level | Note |
-|---|---|---|
-| `@typescript-eslint/no-explicit-any` | error | Use `unknown` + narrowing |
-| `no-console` | error | Sentry / Sonner instead |
-| `max-lines` | error (300) | Excludes blanks + comments |
-| `complexity` | warn @ 15 | |
-| `max-depth` | warn @ 4 | |
-| `max-params` | warn @ 4 | |
-| `no-param-reassign` | error | Exceptions: `state`, `draft`, `config` |
-| `prefer-const` | error | |
-| `no-duplicate-imports` | error | |
-| `no-nested-ternary` | warn | |
-| `@typescript-eslint/naming-convention` | error | PascalCase for types/interfaces |
+| Rule                                   | Level       | Note                                   |
+| -------------------------------------- | ----------- | -------------------------------------- |
+| `@typescript-eslint/no-explicit-any`   | error       | Use `unknown` + narrowing              |
+| `no-console`                           | error       | Sentry / Sonner instead                |
+| `max-lines`                            | error (300) | Excludes blanks + comments             |
+| `complexity`                           | warn @ 15   |                                        |
+| `max-depth`                            | warn @ 4    |                                        |
+| `max-params`                           | warn @ 4    |                                        |
+| `no-param-reassign`                    | error       | Exceptions: `state`, `draft`, `config` |
+| `prefer-const`                         | error       |                                        |
+| `no-duplicate-imports`                 | error       |                                        |
+| `no-nested-ternary`                    | warn        |                                        |
+| `@typescript-eslint/naming-convention` | error       | PascalCase for types/interfaces        |
 
 ## 2. Testing
 

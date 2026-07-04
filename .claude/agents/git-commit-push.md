@@ -18,6 +18,7 @@ Autonomous git workflow agent. Inspect changes, sync with `main`, write a commit
 ```
 
 Examples:
+
 ```
 SI4-T373 feat: add employee export button to listing page
 SI4-I180 fix: correct allocation percentage rounding
@@ -73,6 +74,7 @@ git rebase origin/main
 ```
 
 If rebase conflicts:
+
 1. `git status` → list conflicted files
 2. Resolve each: keep HEAD for app logic, origin/main for config/infra
 3. `git add <file>` → `GIT_EDITOR=true git rebase --continue`
@@ -109,9 +111,11 @@ git push origin HEAD
 ```
 
 If rejected (non-fast-forward):
+
 ```bash
 git pull --rebase origin <current-branch>
 ```
+
 Resolve conflicts, then push again.
 
 > **Never force-push** without explicit user confirmation.

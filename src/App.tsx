@@ -1,14 +1,17 @@
-import { Toaster } from '@/components/ui/sonner';
+import { RouterProvider } from "react-router-dom";
 
-import { DesignSystemShowcase } from './components/common/design-system-showcase';
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/contexts/AuthContext";
+
+import { router } from "./routes";
 
 function App() {
-    return (
-        <>
-            <DesignSystemShowcase />
-            <Toaster />
-        </>
-    );
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+      <Toaster />
+    </AuthProvider>
+  );
 }
 
 export default App;

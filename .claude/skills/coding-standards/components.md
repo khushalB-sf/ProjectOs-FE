@@ -54,10 +54,12 @@
 - Route-level code splitting with `React.lazy` + `Suspense`. See `src/routes/index.tsx`.
 
   ```tsx
-  const EmployeePage = React.lazy(() => import('@/pages/employee/EmployeePage'));
+  const EmployeePage = React.lazy(
+    () => import("@/pages/employee/EmployeePage"),
+  );
   <Suspense fallback={<PageLoadingState />}>
     <EmployeePage />
-  </Suspense>
+  </Suspense>;
   ```
 
 ## 6. Composition Patterns

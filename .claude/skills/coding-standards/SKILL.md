@@ -7,13 +7,13 @@ description: Load when writing or modifying source code in this repo and you nee
 
 CLAUDE.md carries the always-on summary of the project's conventions. This skill holds the **full detail** for each domain. Read the relevant file(s) below before writing code in that area.
 
-| Area | File |
-|---|---|
-| Component architecture & layering, file placement | [components.md](components.md) |
-| API, services & React Query (queries, mutations, infinite) | [api.md](api.md) |
-| State management & context (auth, permissions, feature flags, URL state) | [state.md](state.md) |
-| React patterns, routing, code-splitting & i18n | [react.md](react.md) |
-| General conventions, forms, testing & security | [general.md](general.md) |
+| Area                                                                     | File                           |
+| ------------------------------------------------------------------------ | ------------------------------ |
+| Component architecture & layering, file placement                        | [components.md](components.md) |
+| API, services & React Query (queries, mutations, infinite)               | [api.md](api.md)               |
+| State management & context (auth, permissions, feature flags, URL state) | [state.md](state.md)           |
+| React patterns, routing, code-splitting & i18n                           | [react.md](react.md)           |
+| General conventions, forms, testing & security                           | [general.md](general.md)       |
 
 ## How to use
 

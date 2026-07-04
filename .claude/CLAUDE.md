@@ -28,6 +28,7 @@ There is no separate `typecheck` script — `yarn build` is the type-check gate.
 ## Architecture
 
 ### Folder structure
+
 ```
 src/
 ├── pages/[module]/[Module]Page.tsx     # route-level page components (one per route, lazy-loaded)
@@ -53,30 +54,38 @@ src/
 ├── layouts/  ·  routes/                # layout wrappers · createBrowserRouter config
 └── test/                               # setup.ts + renderWithProviders (utils.tsx)
 ```
+
 A feature module spans the parallel `[module]/` folders above, all keyed by the same module name (e.g. `weekly-updates`). When adding a feature, mirror this layout.
 
 ### State management — NO Redux
+
 Despite some mentions in README/constitution, **this app does not use Redux**. There is no `src/store/`. State is split:
+
 - **Server state** → React Query (`@tanstack/react-query`). All data fetching lives in `src/hooks/[module]/queries.ts` and `mutations.ts`.
 - **App-level state** → React Context providers, composed in `src/App.tsx`: `ErrorBoundary` → `FeatureFlagProvider` → `AbilityProvider` → `RouterProvider`.
 
 ### Auth — cookie-based session (not Bearer token)
+
 - Microsoft SSO via session cookies. The Axios instance (`src/services/api.ts`) sets `withCredentials: true`; there is no Authorization/Bearer header.
 - Client-side auth state is a `localStorage` flag (`STORAGE_KEYS.IS_AUTHENTICATED`) managed by `AuthProvider` (`src/contexts/AuthContext.tsx`), readable via `useAuth()` (`src/contexts/useAuth.ts`).
 - A single response interceptor redirects to `ROUTES.LOGIN` on 401 and reports all errors to Sentry. `setUnauthorizedHandler` wires the interceptor to `clearAuth`.
 - A dev-only credential login (`ROUTES.DEV_LOGIN`, `DevLoginPage`) is registered only when `IS_DEV`.
 
 ### Permissions — CASL
+
 - `AbilityProvider` (`src/components/common/ability-provider/`) builds a CASL `PureAbility` from rules fetched via `usePermissionsQuery` (only when authenticated); resets to an empty ability on logout/failure.
 - `ProtectedRoute` gates routes by `module`/`action` (e.g. `<ProtectedRoute module={APP_SUBJECT.PROFILE} action={APP_ACTION.READ} />`). `APP_ACTION`/`APP_SUBJECT` live in `src/constants/common.ts`.
 
 ### Routing
+
 `src/routes/index.tsx` uses `createBrowserRouter` with lazy-loaded pages wrapped in `Suspense` + `ErrorBoundary`. Nested `ProtectedRoute` elements enforce auth then per-route permissions. Routes carry breadcrumb metadata via `handle`.
 
 ### Data layer flow
+
 A component calls a hook in `hooks/[module]/{queries,mutations}.ts`, which calls a function on the `[module]Api` object in `services/[module]/`, which is the only layer that touches the Axios instance. Query keys are centralized in `src/constants/queryKeys.ts` (key-factory functions like `WEEKLY_UPDATE_QUERY_KEYS.LIST(paramsKey)`). Never inline query-key arrays in hooks.
 
 ### Feature flags
+
 `FeatureFlagProvider` (`src/lib/feature-flags/`) fetches flags; gate UI with the `<FeatureFlag>` component or `useFeatureFlag(FLAG_KEYS.X)`. Flag keys are in `src/constants/featureFlags.ts`.
 
 ## Conventions (enforced — see constitution & ESLint)
@@ -111,4 +120,5 @@ Husky hooks run on commit: lint-staged (ESLint --fix + Prettier on staged `*.{ts
 ```
 SI<sprint>-T<ticket> type: description       # e.g. SI4-T455 feat: weekly listing
 ```
+
 Valid types: `feat fix docs style refactor test chore perf revert ci`. Non-matching messages are rejected.

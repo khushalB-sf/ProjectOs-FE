@@ -63,9 +63,9 @@ yarn test --testPathPattern=<affected module>
 
 ## Step 6 — Summary table
 
-| # | File | Line | Reviewer | Issue | Status |
-|---|---|---|---|---|---|
-| 1 | src/... | 42 | reviewer | Timezone off-by-one | ✅ Fixed |
+| #   | File    | Line | Reviewer | Issue               | Status   |
+| --- | ------- | ---- | -------- | ------------------- | -------- |
+| 1   | src/... | 42   | reviewer | Timezone off-by-one | ✅ Fixed |
 
 ---
 

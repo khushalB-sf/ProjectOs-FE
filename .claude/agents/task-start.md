@@ -23,6 +23,7 @@ You are a **task orchestrator** for the ProjectOS frontend project. Fetch the Zo
 ## Step 1 — Parse the task/issue key
 
 From user input or current branch name (`git branch --show-current`):
+
 - `SI<sprint>-T<number>` → Zoho **Task**
 - `SI<sprint>-I<number>` → Zoho **Issue**
 - Branch pattern: `feat/SI4-T373` → key = `T373`
@@ -46,19 +47,23 @@ git branch --show-current
 Expected pattern: `<type>/<SPRINT_ID>-<TASK_ID_KEY>` (e.g. `feat/SI4-T373`).
 
 If branch doesn't match:
+
 1. Check for existing matching branch: `git branch --list "*<TASK_ID_KEY>*"`
 2. Offer to: switch to existing branch, create new from `main`, or continue on current.
 
 If creating from main:
+
 ```bash
 git fetch origin
 git checkout -b <type>/<SPRINT_ID>-<TASK_ID_KEY> origin/main
 ```
 
 If branch matches, sync with main:
+
 ```bash
 git fetch origin && git pull origin main --no-edit
 ```
+
 Resolve any merge conflicts before proceeding.
 
 ## Step 4 — Present task context

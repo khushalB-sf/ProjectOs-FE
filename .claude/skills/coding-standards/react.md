@@ -10,14 +10,14 @@ Covers: code organization, routing, internationalization, documentation, type sa
 
 ### File Naming Conventions
 
-| Artifact | Convention | Example |
-|---|---|---|
-| Components | PascalCase | `EmployeeList.tsx` |
-| Hooks | `use` prefix, camelCase | `useEmployeeList.ts` |
-| Services | camelCase | `employeeApi.ts` |
-| Schemas | camelCase | `employeeSchema.ts` |
-| Types | PascalCase | `Employee.ts` |
-| Constants | camelCase | `employeeConstants.ts` |
+| Artifact   | Convention              | Example                |
+| ---------- | ----------------------- | ---------------------- |
+| Components | PascalCase              | `EmployeeList.tsx`     |
+| Hooks      | `use` prefix, camelCase | `useEmployeeList.ts`   |
+| Services   | camelCase               | `employeeApi.ts`       |
+| Schemas    | camelCase               | `employeeSchema.ts`    |
+| Types      | PascalCase              | `Employee.ts`          |
+| Constants  | camelCase               | `employeeConstants.ts` |
 
 ### Splitting Large Files
 

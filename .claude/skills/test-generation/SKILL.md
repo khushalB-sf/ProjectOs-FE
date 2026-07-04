@@ -6,6 +6,7 @@ description: Use when authoring Jest + React Testing Library tests for this repo
 ## Overview
 
 Generate production-ready test suites that follow the ProjectOS testing strategy:
+
 - **Components** → React Testing Library (user behavior, accessibility)
 - **Hooks** → `renderHook` wrapper with context providers
 - **Utilities** → Unit tests with edge cases
@@ -21,30 +22,32 @@ All tests colocate with source as `*.test.ts(x)` or `*.spec.ts(x)`.
 ### **Components** (`src/components/**/*.test.tsx`)
 
 **Setup:**
+
 ```tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '@/test/utils';  // ← use for app context
-import { LABELS } from '@/constants/labels';        // ← strings from constants
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderWithProviders } from "@/test/utils"; // ← use for app context
+import { LABELS } from "@/constants/labels"; // ← strings from constants
 ```
 
 **File Structure:**
+
 ```tsx
 describe('ComponentName', () => {
   // Use describe blocks to group related tests
-  
+
   // UI & rendering tests
   it('renders with correct content', () => { ... });
   it('renders accessible attributes (aria-label, role)', () => { ... });
-  
+
   // User interaction tests
   it('calls onClick when clicked', async () => { ... });
-  
+
   // State & conditional rendering
   it('shows loading state', () => { ... });
   it('shows error state', () => { ... });
   it('shows empty state', () => { ... });
-  
+
   // Props validation
   it('applies custom className', () => { ... });
   it('respects disabled prop', () => { ... });
@@ -52,6 +55,7 @@ describe('ComponentName', () => {
 ```
 
 **When to use `renderWithProviders`:**
+
 - Component needs routing (MemoryRouter)
 - Component needs auth context (AuthProvider)
 - Component needs React Query (QueryClientProvider)
@@ -59,6 +63,7 @@ describe('ComponentName', () => {
 - **Default choice for page/feature components**
 
 **When to use plain `render`:**
+
 - Pure UI components (Button, Card, Input primitives)
 - Components with no dependencies on context/providers
 - **shadcn/ui primitives (they're vendor code)**
@@ -66,13 +71,15 @@ describe('ComponentName', () => {
 ### **Hooks** (`src/hooks/**/*.test.ts(x)`)
 
 **Setup:**
+
 ```tsx
-import { renderHook, waitFor } from '@testing-library/react';
-import type { ReactNode } from 'react';
-import { useMyHook } from './useMyHook';
+import { renderHook, waitFor } from "@testing-library/react";
+import type { ReactNode } from "react";
+import { useMyHook } from "./useMyHook";
 ```
 
 **For hooks with providers:**
+
 ```tsx
 const wrapper = ({ children }: { children: ReactNode }) => (
   <FeatureFlagProvider>{children}</FeatureFlagProvider>
@@ -82,21 +89,22 @@ const { result } = renderHook(() => useMyHook(), { wrapper });
 ```
 
 **File Structure:**
+
 ```tsx
 describe('useHookName', () => {
   // Initial state/value tests
   it('returns initial value', () => { ... });
-  
+
   // State update tests
   it('updates state when condition changes', async () => { ... });
-  
+
   // API/Query tests (if applicable)
   it('fetches data on mount', async () => { ... });
   it('handles API error', async () => { ... });
-  
+
   // Context dependency tests
   it('throws when used outside Provider', () => { ... });
-  
+
   // Cleanup tests
   it('cleans up on unmount', () => { ... });
 });
@@ -105,23 +113,25 @@ describe('useHookName', () => {
 ### **Utilities** (`src/lib/**/*.test.ts`)
 
 **Setup:**
+
 ```tsx
-import { myUtilFunction } from './myUtil';
+import { myUtilFunction } from "./myUtil";
 ```
 
 **File Structure:**
+
 ```tsx
 describe('utilFunctionName', () => {
   // Happy path
   it('returns correct output for valid input', () => {
     expect(myUtilFunction('input')).toBe('expected');
   });
-  
+
   // Edge cases & boundaries
   it('handles empty string', () => { ... });
   it('handles null', () => { ... });
   it('handles very large numbers', () => { ... });
-  
+
   // Error cases
   it('throws on invalid input', () => {
     expect(() => myUtilFunction(null)).toThrow();
@@ -136,6 +146,7 @@ describe('utilFunctionName', () => {
 ### ✅ DO TEST
 
 **Components:**
+
 - Rendered output (text, elements, structure)
 - ARIA attributes (role, aria-label, aria-pressed, aria-live)
 - User interactions (click, type, keyboard, focus)
@@ -145,6 +156,7 @@ describe('utilFunctionName', () => {
 - Form validation & submission
 
 **Hooks:**
+
 - Initial return value
 - State updates (via `waitFor`)
 - API calls and responses
@@ -153,6 +165,7 @@ describe('utilFunctionName', () => {
 - Cleanup (ResizeObserver, event listeners, timers)
 
 **Utilities:**
+
 - Happy path (valid inputs → correct output)
 - Edge cases (empty, null, undefined, boundary values)
 - Error conditions (invalid input → throws or error return)
@@ -171,45 +184,46 @@ describe('utilFunctionName', () => {
 ## 📋 Test Data & Mocking
 
 ### **Use realistic, minimal test data:**
+
 ```tsx
 // ✅ Good
-const mockUser = { id: '1', name: 'John', email: 'john@example.com' };
-const mockGoal = { id: 'G1', title: 'Q1 Goal', status: 'in-progress' };
+const mockUser = { id: "1", name: "John", email: "john@example.com" };
+const mockGoal = { id: "G1", title: "Q1 Goal", status: "in-progress" };
 
 // ❌ Bad
 const mockData = { a: 1, b: 2, c: 3 };
 ```
 
 ### **Mock API calls:**
+
 ```tsx
 // Services export a named object (e.g. goalsApi), not standalone functions.
 // Use jest.Mocked<typeof goalsApi> for full type safety.
 
-import { goalsApi } from '@/services/goals/goalsApi';
+import { goalsApi } from "@/services/goals/goalsApi";
 
-jest.mock('@/services/goals/goalsApi');
+jest.mock("@/services/goals/goalsApi");
 
 const mockGoalsApi = goalsApi as jest.Mocked<typeof goalsApi>;
 
-it('fetches goals on mount', async () => {
-  mockGoalsApi.getGoals.mockResolvedValueOnce([
-    { id: '1', title: 'Goal 1' }
-  ]);
+it("fetches goals on mount", async () => {
+  mockGoalsApi.getGoals.mockResolvedValueOnce([{ id: "1", title: "Goal 1" }]);
 
   const { result } = renderHook(() => useFetchGoals());
 
   await waitFor(() => {
-    expect(result.current.data).toEqual([{ id: '1', title: 'Goal 1' }]);
+    expect(result.current.data).toEqual([{ id: "1", title: "Goal 1" }]);
   });
 });
 ```
 
 ### **Mock context providers:**
+
 ```tsx
 // For testing hooks that use context
-jest.mock('@/contexts/AuthContext', () => ({
+jest.mock("@/contexts/AuthContext", () => ({
   useAuth: jest.fn().mockReturnValue({
-    user: { id: '1', name: 'Test User' },
+    user: { id: "1", name: "Test User" },
     isAuthenticated: true,
   }),
 }));
@@ -220,45 +234,48 @@ jest.mock('@/contexts/AuthContext', () => ({
 ## 🧪 Common Test Patterns
 
 ### **Pattern 1: User Interaction**
+
 ```tsx
-it('submits form on Enter key', async () => {
+it("submits form on Enter key", async () => {
   const handleSubmit = jest.fn();
   render(<SearchInput onSubmit={handleSubmit} />);
-  
-  const input = screen.getByRole('textbox');
-  await userEvent.type(input, 'search term');
-  await userEvent.keyboard('{Enter}');
-  
-  expect(handleSubmit).toHaveBeenCalledWith('search term');
+
+  const input = screen.getByRole("textbox");
+  await userEvent.type(input, "search term");
+  await userEvent.keyboard("{Enter}");
+
+  expect(handleSubmit).toHaveBeenCalledWith("search term");
 });
 ```
 
 ### **Pattern 2: Loading State**
+
 ```tsx
-it('shows loading state while fetching', async () => {
+it("shows loading state while fetching", async () => {
   renderWithProviders(<GoalTable />);
-  
+
   // Loading state is shown
-  expect(screen.getByRole('progressbar')).toBeInTheDocument();
-  
+  expect(screen.getByRole("progressbar")).toBeInTheDocument();
+
   // Wait for data to load
   await waitFor(() => {
-    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
   });
-  
+
   // Data is rendered
-  expect(screen.getByText('Goal 1')).toBeInTheDocument();
+  expect(screen.getByText("Goal 1")).toBeInTheDocument();
 });
 ```
 
 ### **Pattern 3: Error State**
+
 ```tsx
-it('displays error message on API failure', async () => {
-  const error = new Error('Failed to fetch');
+it("displays error message on API failure", async () => {
+  const error = new Error("Failed to fetch");
   (goalsApi.getGoals as jest.Mock).mockRejectedValueOnce(error);
-  
+
   renderWithProviders(<GoalTable />);
-  
+
   await waitFor(() => {
     expect(screen.getByText(/failed to fetch/i)).toBeInTheDocument();
   });
@@ -266,45 +283,49 @@ it('displays error message on API failure', async () => {
 ```
 
 ### **Pattern 4: Hook with Context**
+
 ```tsx
-it('throws when used outside Provider', () => {
-  expect(() => renderHook(() => useFeatureFlag('flag'))).toThrow(
-    LABELS.FEATURE_FLAGS.USE_PROVIDER_ERROR
+it("throws when used outside Provider", () => {
+  expect(() => renderHook(() => useFeatureFlag("flag"))).toThrow(
+    LABELS.FEATURE_FLAGS.USE_PROVIDER_ERROR,
   );
 });
 
-it('returns flag value from context', () => {
+it("returns flag value from context", () => {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <FeatureFlagContext.Provider value={{ flags: { 'test.flag': true }, isLoading: false }}>
+    <FeatureFlagContext.Provider
+      value={{ flags: { "test.flag": true }, isLoading: false }}
+    >
       {children}
     </FeatureFlagContext.Provider>
   );
-  
-  const { result } = renderHook(() => useFeatureFlag('test.flag'), { wrapper });
-  
+
+  const { result } = renderHook(() => useFeatureFlag("test.flag"), { wrapper });
+
   expect(result.current).toBe(true);
 });
 ```
 
 ### **Pattern 5: Async Hook Update**
+
 ```tsx
-it('updates data when dependency changes', async () => {
+it("updates data when dependency changes", async () => {
   const { result, rerender } = renderHook(
     ({ id }: { id: string }) => useFetchGoal(id),
-    { initialProps: { id: '1' } }
+    { initialProps: { id: "1" } },
   );
-  
+
   // Initial fetch
   await waitFor(() => {
-    expect(result.current.data?.id).toBe('1');
+    expect(result.current.data?.id).toBe("1");
   });
-  
+
   // Re-render with new dependency
-  rerender({ id: '2' });
-  
+  rerender({ id: "2" });
+
   // Should fetch new data
   await waitFor(() => {
-    expect(result.current.data?.id).toBe('2');
+    expect(result.current.data?.id).toBe("2");
   });
 });
 ```
@@ -314,28 +335,30 @@ it('updates data when dependency changes', async () => {
 ## 🔍 Accessibility Testing
 
 **Always use accessible queries:**
+
 ```tsx
 // ✅ DO use accessible queries
-screen.getByRole('button', { name: /click me/i })
-screen.getByLabelText('Email')
-screen.getByText('Form title')
+screen.getByRole("button", { name: /click me/i });
+screen.getByLabelText("Email");
+screen.getByText("Form title");
 
 // ❌ AVOID implementation-detail queries
-screen.getByTestId('submit-btn')
-screen.getByClassName('form-input')
-screen.getByRole('div')  // DIV has no semantic role
+screen.getByTestId("submit-btn");
+screen.getByClassName("form-input");
+screen.getByRole("div"); // DIV has no semantic role
 ```
 
 **Test ARIA attributes:**
+
 ```tsx
-it('has correct aria-label and aria-pressed', () => {
+it("has correct aria-label and aria-pressed", () => {
   render(<AnnouncementIcon onClick={jest.fn()} isOpen={false} />);
-  
-  const button = screen.getByRole('button', { 
-    name: LABELS.ANNOUNCEMENT_MODAL.HEADER_ICON_ARIA_LABEL 
+
+  const button = screen.getByRole("button", {
+    name: LABELS.ANNOUNCEMENT_MODAL.HEADER_ICON_ARIA_LABEL,
   });
-  
-  expect(button).toHaveAttribute('aria-pressed', 'false');
+
+  expect(button).toHaveAttribute("aria-pressed", "false");
 });
 ```
 
@@ -344,6 +367,7 @@ it('has correct aria-label and aria-pressed', () => {
 ## ⚠️ Anti-Patterns & Common Mistakes
 
 ❌ **DO NOT:**
+
 - Test state/hooks directly — test user-visible behavior
 - Use `getByTestId` (breaks if UI changes; not accessible)
 - Import component internals for testing
@@ -353,6 +377,7 @@ it('has correct aria-label and aria-pressed', () => {
 - Test implementation details (e.g., `expect(component.state).toBe(...)`)
 
 ❌ **Avoid over-mocking:**
+
 - Mock only external APIs, not React components
 - Use real `renderWithProviders` instead of mocking every provider
 - Keep mocks minimal — test real behavior when possible
@@ -362,6 +387,7 @@ it('has correct aria-label and aria-pressed', () => {
 ## 📊 Coverage Requirements
 
 **Current project thresholds (`jest.config.ts`):**
+
 ```
 branches: 70%
 lines: 70%
@@ -370,11 +396,13 @@ statements: 70%
 ```
 
 **Check coverage:**
+
 ```bash
 yarn test:coverage
 ```
 
 **Excluded from coverage** (see `jest.config.ts` for the complete, authoritative exclusion list):
+
 - `src/test/**` — test utilities
 - `src/components/ui/**` — shadcn/ui (vendor code)
 - `src/i18n/**` — internationalization configuration

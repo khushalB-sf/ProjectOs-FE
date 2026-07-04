@@ -10,28 +10,30 @@
 - Pages orchestrate layout and hook wiring; presentational components only receive data via props.
 
 **Flag if:**
+
 - A component imports from `@/services/` directly.
 - A service function contains conditional logic, state, or UI concerns.
 - A page component grows beyond layout orchestration into data transformation.
 
 ### File placement
 
-| Artifact | Location |
-|---|---|
-| Route-level pages | `src/pages/<module>/` |
-| Feature UI | `src/components/<module>/` |
-| Shared/common components | `src/components/common/` |
-| shadcn/ui primitives | `src/components/ui/` (vendor — do not modify) |
-| Query hooks | `src/hooks/<module>/queries.ts` |
-| Mutation hooks | `src/hooks/<module>/mutations.ts` |
-| Services | `src/services/<module>/<module>Api.ts` |
-| Types / DTOs | `src/types/<module>/index.ts` |
-| Zod schemas | `src/schemas/<module>/index.ts` |
-| Constants | `src/constants/` |
-| Utilities | `src/lib/` |
-| Contexts | `src/contexts/` |
+| Artifact                 | Location                                      |
+| ------------------------ | --------------------------------------------- |
+| Route-level pages        | `src/pages/<module>/`                         |
+| Feature UI               | `src/components/<module>/`                    |
+| Shared/common components | `src/components/common/`                      |
+| shadcn/ui primitives     | `src/components/ui/` (vendor — do not modify) |
+| Query hooks              | `src/hooks/<module>/queries.ts`               |
+| Mutation hooks           | `src/hooks/<module>/mutations.ts`             |
+| Services                 | `src/services/<module>/<module>Api.ts`        |
+| Types / DTOs             | `src/types/<module>/index.ts`                 |
+| Zod schemas              | `src/schemas/<module>/index.ts`               |
+| Constants                | `src/constants/`                              |
+| Utilities                | `src/lib/`                                    |
+| Contexts                 | `src/contexts/`                               |
 
 **Flag if:**
+
 - New files placed outside the established structure.
 - Feature-specific code added to `src/components/common/` or `src/components/ui/`.
 - Types/DTOs defined inline in a component, hook, or service.
@@ -46,6 +48,7 @@
 - **Routes**: navigation paths from `ROUTES` in `src/constants/routes.ts`. Never hardcode `'/dashboard'` etc.
 
 **Flag if:**
+
 - A service function uses a string literal URL instead of `ENDPOINTS.*`.
 - A hook creates an ad-hoc query key string/array.
 - A component renders a hardcoded user-facing string.
@@ -73,6 +76,7 @@
 `react` → third-party → `@/constants` → `@/contexts` → `@/hooks` → `@/services` → `@/types` → `@/lib` → `@/components` → relative.
 
 **Flag if:**
+
 - `any` is used in production code.
 - `@ts-ignore` / `@ts-expect-error` added without an explanatory comment.
 - `import { Foo }` used for a type never used at runtime (should be `import type`).

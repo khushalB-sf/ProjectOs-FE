@@ -1,6 +1,7 @@
 # API Integration — Detailed Guide
 
 Related:
+
 - Form field errors + Zod validation: `general.md` (validation section)
 - State management: `state.md`
 
@@ -10,7 +11,7 @@ Related:
 - **Never** create a new Axios instance in a module.
 
   ```ts
-  import api from '@/services/api';
+  import api from "@/services/api";
   api.get<ApiResponse<Employee[]>>(ENDPOINTS.EMPLOYEES.LIST);
   ```
 
@@ -18,11 +19,12 @@ Related:
 
   ```ts
   // src/services/employee/employeeApi.ts
-  import api from '@/services/api';
-  import { ENDPOINTS } from '@/constants/endpoints';
+  import api from "@/services/api";
+  import { ENDPOINTS } from "@/constants/endpoints";
   export function fetchEmployees(): Promise<Employee[]> {
-    return api.get<ApiResponse<Employee[]>>(ENDPOINTS.EMPLOYEES.LIST)
-      .then(r => r.data.data);
+    return api
+      .get<ApiResponse<Employee[]>>(ENDPOINTS.EMPLOYEES.LIST)
+      .then((r) => r.data.data);
   }
   ```
 
@@ -37,9 +39,9 @@ Related:
 
   ```ts
   // src/hooks/employee/queries.ts
-  import { useQuery } from '@tanstack/react-query';
-  import { fetchEmployees } from '@/services/employee/employeeApi';
-  import { EMPLOYEE_QUERY_KEYS } from '@/constants/queryKeys';
+  import { useQuery } from "@tanstack/react-query";
+  import { fetchEmployees } from "@/services/employee/employeeApi";
+  import { EMPLOYEE_QUERY_KEYS } from "@/constants/queryKeys";
 
   export function useEmployees() {
     return useQuery({
@@ -66,7 +68,9 @@ Related:
     return useMutation<Employee, Error, CreateEmployeeDto>({
       mutationFn: createEmployee,
       onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey: EMPLOYEE_QUERY_KEYS.EMPLOYEES });
+        void queryClient.invalidateQueries({
+          queryKey: EMPLOYEE_QUERY_KEYS.EMPLOYEES,
+        });
         toast.success(LABELS.EMPLOYEE.CREATE_SUCCESS);
       },
       onError: (error) => {

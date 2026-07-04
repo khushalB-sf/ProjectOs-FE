@@ -18,6 +18,7 @@ Autonomous PR generation agent. Analyse commits and diff on the current branch v
 ```
 
 Examples:
+
 ```
 [SI4-T373] feat: sort employees by hours logged in project table
 [SI4-I180] fix: resolve allocation percentage rounding error
@@ -77,23 +78,27 @@ If PR exists → ask whether to update it. If yes, edit. If no, stop.
 
 ```markdown
 ## Summary
+
 <1–3 sentences: what this PR does and why, for a reviewer with no context>
 
 ---
 
 ## Changes
+
 - **`path/to/File.tsx`** — <what changed>
 
 ---
 
 ## Behaviour
+
 | Before | After |
-|--------|-------|
-| <old> | <new> |
+| ------ | ----- |
+| <old>  | <new> |
 
 ---
 
 ## Testing
+
 - [ ] <test scenario 1>
 - [ ] <test scenario 2>
 - [ ] No visual regression on <page/component>
@@ -101,6 +106,7 @@ If PR exists → ask whether to update it. If yes, edit. If no, stop.
 ---
 
 ## Screenshots
+
 <Attach screenshots if UI changed. Otherwise: "N/A — no UI changes.">
 ```
 
