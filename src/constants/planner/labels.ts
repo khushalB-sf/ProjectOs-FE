@@ -1,4 +1,14 @@
 export const PLANNER_LABELS = {
+  API: {
+    CREATE_SPRINT_SUCCESS: "Sprint created successfully.",
+    CREATE_SPRINT_ERROR: "Failed to create sprint.",
+    GENERATE_SPRINTS_SUCCESS: "Sprint plan generation started.",
+    GENERATE_SPRINTS_ERROR: "Failed to start sprint plan generation.",
+    CREATE_TASK_SUCCESS: "Task created successfully.",
+    CREATE_TASK_ERROR: "Failed to create task.",
+    UPDATE_TASK_SUCCESS: "Task updated successfully.",
+    UPDATE_TASK_ERROR: "Failed to update task.",
+  },
   VIEW: {
     KANBAN: "Kanban",
     GANTT: "Gantt",

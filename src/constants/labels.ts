@@ -3,6 +3,7 @@ import { DASHBOARD_LABELS } from "@/constants/dashboard/labels";
 import { MEETINGS_LABELS } from "@/constants/meetings/labels";
 import { NAV_LABELS } from "@/constants/nav/labels";
 import { PLANNER_LABELS } from "@/constants/planner/labels";
+import { PROJECTS_LABELS } from "@/constants/projects/labels";
 import { PROPOSAL_LABELS } from "@/constants/proposal/labels";
 import { REQUIREMENTS_LABELS } from "@/constants/requirements/labels";
 import { RESOURCES_LABELS } from "@/constants/resources/labels";
@@ -32,6 +33,7 @@ export const LABELS = {
   AUTH: AUTH_LABELS,
   NAV: NAV_LABELS,
   DASHBOARD: DASHBOARD_LABELS,
+  PROJECTS: PROJECTS_LABELS,
   REQUIREMENTS: REQUIREMENTS_LABELS,
   PROPOSAL: PROPOSAL_LABELS,
   PLANNER: PLANNER_LABELS,

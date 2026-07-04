@@ -1,4 +1,8 @@
 export const RISK_LABELS = {
+  API: {
+    COMPUTE_SUCCESS: "Risk computation started.",
+    COMPUTE_ERROR: "Failed to start risk computation.",
+  },
   GAUGE: {
     CAPTION: "Current Risk Score",
     VALUE: "74",

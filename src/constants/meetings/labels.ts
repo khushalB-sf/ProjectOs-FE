@@ -1,4 +1,12 @@
 export const MEETINGS_LABELS = {
+  API: {
+    CREATE_SUCCESS: "Meeting created successfully.",
+    CREATE_ERROR: "Failed to create meeting.",
+    UPDATE_SUCCESS: "Meeting updated successfully.",
+    UPDATE_ERROR: "Failed to update meeting.",
+    REPROCESS_SUCCESS: "Meeting reprocessing started.",
+    REPROCESS_ERROR: "Failed to reprocess meeting.",
+  },
   ACTIONS: {
     PROCESS_NEW: "Process New Transcript",
     COPY_MOM: "Copy MOM",

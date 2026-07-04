@@ -1,5 +1,17 @@
 /** All user-visible copy for the Requirements module. */
 export const REQUIREMENTS_LABELS = {
+  API: {
+    UPLOAD_SUCCESS: "Document uploaded successfully.",
+    UPLOAD_ERROR: "Failed to upload document.",
+    PROCESS_SUCCESS: "Document processing started.",
+    PROCESS_ERROR: "Failed to start document processing.",
+    UPDATE_SUCCESS: "Requirement updated successfully.",
+    UPDATE_ERROR: "Failed to update requirement.",
+    GENERATE_STORIES_SUCCESS: "User story generation started.",
+    GENERATE_STORIES_ERROR: "Failed to start user story generation.",
+    STORY_UPDATE_SUCCESS: "User story updated successfully.",
+    STORY_UPDATE_ERROR: "Failed to update user story.",
+  },
   TABS: {
     DOCUMENTS: "Documents",
     REQUIREMENTS: "Requirements",

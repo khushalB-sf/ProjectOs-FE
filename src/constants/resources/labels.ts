@@ -1,5 +1,9 @@
 /** All user-visible copy for the Resources module. */
 export const RESOURCES_LABELS = {
+  API: {
+    SUGGEST_SUCCESS: "Team suggestion started.",
+    SUGGEST_ERROR: "Failed to start team suggestion.",
+  },
   TEAM_MEMBERS: {
     TITLE: "Team Members",
     AI_SUGGEST: "AI Suggest Team →",

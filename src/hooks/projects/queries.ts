@@ -13,6 +13,14 @@ export function useProjects(enabled = true) {
   });
 }
 
+export function useProject(projectId?: string) {
+  return useQuery({
+    queryKey: PROJECTS_QUERY_KEYS.DETAIL(projectId ?? ""),
+    queryFn: () => projectsApi.getProject(projectId!),
+    enabled: Boolean(projectId),
+  });
+}
+
 export function useProjectDashboard(projectId?: string) {
   return useQuery({
     queryKey: PROJECTS_QUERY_KEYS.DASHBOARD(projectId ?? ""),

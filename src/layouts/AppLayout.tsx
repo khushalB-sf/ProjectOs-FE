@@ -32,7 +32,10 @@ function AppLayout() {
     <div className="flex h-screen overflow-hidden">
       <AppSidebar onLogout={handleLogout} />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <AppTopbar title={title} subtitle={activeProject.subtitle} />
+        <AppTopbar
+          title={title}
+          subtitle={activeProject?.description ?? LABELS.NAV.SUBTITLE}
+        />
         <main className="flex-1 overflow-y-auto bg-slate-50 p-6">
           <Outlet />
         </main>

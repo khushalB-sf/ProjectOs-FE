@@ -1,28 +1,57 @@
+/* -------------------------------------------------------------------------- */
+/* API contract (server wire shapes — snake_case, bare responses)             */
+/* -------------------------------------------------------------------------- */
+
+/** A project record as returned by the projects endpoints. */
 export interface Project {
   id: string;
   name: string;
-  description: string;
-  clientName: string;
   status: string;
-  startDate: string;
-  targetEndDate: string;
-  budgetUsd: number;
+  description: string | null;
+  client_name: string | null;
+  start_date: string | null;
+  target_end_date: string | null;
+  budget_usd: number | null;
+  created_at: string;
 }
 
+/** Body for creating a project (`POST /projects`). */
 export interface CreateProjectDto {
   name: string;
-  description: string;
-  clientName: string;
-  startDate: string;
-  targetEndDate: string;
-  budgetUsd: number;
+  description?: string | null;
+  client_name?: string | null;
+  start_date?: string | null;
+  target_end_date?: string | null;
+  budget_usd?: number | null;
 }
 
-export type UpdateProjectDto = Partial<
-  Pick<CreateProjectDto, "description">
-> & {
-  status?: string;
-};
+/** Body for updating a project (`PUT /projects/{id}`). All fields optional. */
+export interface UpdateProjectDto {
+  name?: string | null;
+  description?: string | null;
+  status?: string | null;
+  client_name?: string | null;
+  start_date?: string | null;
+  target_end_date?: string | null;
+  budget_usd?: number | null;
+}
+
+/** Aggregate metrics for a project (`GET /projects/{id}/dashboard`). */
+export interface ProjectDashboard {
+  project: Project;
+  total_tasks: number;
+  completed_tasks: number;
+  in_progress_tasks: number;
+  blocked_tasks: number;
+  active_sprint: Record<string, unknown> | null;
+  latest_risk_score: number | null;
+  team_size: number;
+  completion_percentage: number;
+}
+
+/* -------------------------------------------------------------------------- */
+/* UI view-models (component-facing shapes, mapped from the API contract)     */
+/* -------------------------------------------------------------------------- */
 
 export interface DashboardStat {
   id: string;
@@ -63,12 +92,4 @@ export interface DashboardMilestone {
   badgeText: string;
   progressValue: number;
   date: string;
-}
-
-export interface ProjectDashboard {
-  stats: DashboardStat[];
-  burndown: DashboardChartPoint[];
-  velocity: DashboardVelocityPoint[];
-  recentActivity: DashboardActivityItem[];
-  milestones: DashboardMilestone[];
 }

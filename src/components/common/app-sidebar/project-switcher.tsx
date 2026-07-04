@@ -18,6 +18,19 @@ import { LABELS } from "@/constants/labels";
 function ProjectSwitcher() {
   const { projects, activeProject, setActiveProjectId } = useProject();
 
+  if (!activeProject) {
+    return (
+      <div className="w-full rounded-lg bg-slate-800 px-3 py-2">
+        <p className="mb-0.5 text-xs text-slate-400">
+          {LABELS.NAV.CURRENT_PROJECT}
+        </p>
+        <p className="truncate text-sm font-medium text-slate-500">
+          {LABELS.NAV.NO_PROJECT}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

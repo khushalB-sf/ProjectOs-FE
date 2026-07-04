@@ -1,25 +1,24 @@
 import api from "@/services/api";
 import { ENDPOINTS } from "@/constants/endpoints";
 
-import type { Proposal, UpdateProposalDto } from "@/types/proposal";
-import type { ApiResponse } from "@/types/common";
+import type { ProposalResponse, ProposalUpdate } from "@/types/proposal";
 
 export const proposalApi = {
-  generateProposal: (projectId: string): Promise<Proposal> =>
+  generateProposal: (projectId: string): Promise<unknown> =>
     api
-      .post<ApiResponse<Proposal>>(ENDPOINTS.PROPOSAL.GENERATE(projectId))
-      .then((r) => r.data.data),
+      .post<unknown>(ENDPOINTS.PROPOSAL.GENERATE(projectId))
+      .then((r) => r.data),
 
-  getProposal: (projectId: string): Promise<Proposal> =>
+  getProposal: (projectId: string): Promise<ProposalResponse> =>
     api
-      .get<ApiResponse<Proposal>>(ENDPOINTS.PROPOSAL.DETAIL(projectId))
-      .then((r) => r.data.data),
+      .get<ProposalResponse>(ENDPOINTS.PROPOSAL.DETAIL(projectId))
+      .then((r) => r.data),
 
   updateProposal: (
     projectId: string,
-    data: UpdateProposalDto,
-  ): Promise<Proposal> =>
+    data: ProposalUpdate,
+  ): Promise<ProposalResponse> =>
     api
-      .put<ApiResponse<Proposal>>(ENDPOINTS.PROPOSAL.DETAIL(projectId), data)
-      .then((r) => r.data.data),
+      .put<ProposalResponse>(ENDPOINTS.PROPOSAL.DETAIL(projectId), data)
+      .then((r) => r.data),
 };

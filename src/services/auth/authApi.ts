@@ -7,7 +7,6 @@ import type {
   LoginDto,
   RegisterDto,
 } from "@/types/auth";
-import type { ApiResponse } from "@/types/common";
 
 interface AuthTokensResponse {
   access_token: string;
@@ -24,29 +23,27 @@ function toAuthTokens(response: AuthTokensResponse): AuthTokens {
 export const authApi = {
   login: (data: LoginDto): Promise<AuthTokens> =>
     api
-      .post<ApiResponse<AuthTokensResponse>>(ENDPOINTS.AUTH.LOGIN, data)
-      .then((r) => toAuthTokens(r.data.data)),
+      .post<AuthTokensResponse>(ENDPOINTS.AUTH.LOGIN, data)
+      .then((r) => toAuthTokens(r.data)),
 
   register: (data: RegisterDto): Promise<AuthTokens> =>
     api
-      .post<ApiResponse<AuthTokensResponse>>(ENDPOINTS.AUTH.REGISTER, {
+      .post<AuthTokensResponse>(ENDPOINTS.AUTH.REGISTER, {
         email: data.email,
         name: data.name,
         password: data.password,
         role: data.role,
         org_name: data.orgName,
       })
-      .then((r) => toAuthTokens(r.data.data)),
+      .then((r) => toAuthTokens(r.data)),
 
   refresh: (refreshToken: string): Promise<AuthTokens> =>
     api
-      .post<ApiResponse<AuthTokensResponse>>(ENDPOINTS.AUTH.REFRESH, {
+      .post<AuthTokensResponse>(ENDPOINTS.AUTH.REFRESH, {
         refresh_token: refreshToken,
       })
-      .then((r) => toAuthTokens(r.data.data)),
+      .then((r) => toAuthTokens(r.data)),
 
   getCurrentUser: (): Promise<CurrentUser> =>
-    api
-      .get<ApiResponse<CurrentUser>>(ENDPOINTS.AUTH.ME)
-      .then((r) => r.data.data),
+    api.get<CurrentUser>(ENDPOINTS.AUTH.ME).then((r) => r.data),
 };

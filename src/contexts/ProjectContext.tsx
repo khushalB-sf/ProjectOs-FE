@@ -6,10 +6,11 @@ import { useAuth } from "@/contexts/useAuth";
 import type { Project } from "@/types/projects";
 
 interface ProjectContextValue {
-  currentProject: Project | undefined;
+  activeProject: Project | undefined;
   projectId: string | undefined;
   projects: Project[];
   isLoading: boolean;
+  setActiveProjectId: (projectId: string) => void;
 }
 
 const ProjectContext = React.createContext<ProjectContextValue | undefined>(
@@ -17,23 +18,31 @@ const ProjectContext = React.createContext<ProjectContextValue | undefined>(
 );
 
 /**
- * ProjectContext — fetches the org's projects and exposes the first one as the
- * "current project" for the whole app, since there is no project-switcher UI yet.
+ * ProjectContext — fetches the org's projects and exposes the selected one as the
+ * "active project" for the whole app. Defaults to the first project until the
+ * user picks another one via ProjectSwitcher; falls back to the first project
+ * again if the selected id disappears from the list (e.g. after a refetch).
  */
 function ProjectProvider({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
   const { data: projects, isLoading } = useProjects(isAuthenticated);
+  const [activeProjectId, setActiveProjectId] = React.useState<
+    string | undefined
+  >(undefined);
 
-  const currentProject = projects?.[0];
+  const activeProject =
+    projects?.find((project) => project.id === activeProjectId) ??
+    projects?.[0];
 
   const value = React.useMemo(
     () => ({
-      currentProject,
-      projectId: currentProject?.id,
+      activeProject,
+      projectId: activeProject?.id,
       projects: projects ?? [],
       isLoading,
+      setActiveProjectId,
     }),
-    [currentProject, projects, isLoading],
+    [activeProject, projects, isLoading],
   );
 
   return (

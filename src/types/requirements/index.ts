@@ -1,62 +1,53 @@
-import type { Priority, StatusTone } from "@/types/common";
+import type { StatusTone } from "@/types/common";
 
 /* -------------------------------------------------------------------------- */
-/* API DTOs (server response / request shapes)                                */
+/* API contract (server wire shapes — snake_case, bare responses)             */
 /* -------------------------------------------------------------------------- */
 
-/** Requirement classification returned by the API. */
-export type RequirementType = "functional" | "non_functional";
+/** Requirement classification (e.g. "functional" | "non_functional"). */
+export type RequirementType = string;
 
-/** Raw document record as returned by the documents endpoints. */
-export type RequirementDocumentDto = {
+/** A requirement as returned by `GET /projects/{id}/requirements`. */
+export interface RequirementResponse {
   id: string;
-  filename: string;
-  fileType: string;
-  sizeBytes?: number;
-  sizeLabel?: string;
-  uploadedAt: string;
-  status: DocumentStatus;
-};
-
-/** Raw requirement record returned by the requirements endpoints. */
-export type RequirementDto = {
-  id: string;
-  code: string;
-  title: string;
-  description: string;
-  priority: Priority;
-  status: string;
   type: RequirementType;
-};
-
-/** Body for updating a single requirement. */
-export type UpdateRequirementDto = {
   title: string;
   description: string;
-  priority: Priority;
+  priority: string;
   status: string;
-};
+}
 
-/** Raw user-story record returned by the stories endpoint. */
-export type UserStoryDto = {
+/** Body for updating a requirement (`PUT /requirements/{id}`). */
+export interface RequirementUpdate {
+  title?: string | null;
+  description?: string | null;
+  priority?: string | null;
+  status?: string | null;
+  type?: string | null;
+}
+
+/** A user story as returned by `GET /projects/{id}/stories`. */
+export interface UserStoryResponse {
   id: string;
-  code?: string;
-  title: string;
-  storyPoints: number;
-  priority: Priority;
-  status: string;
-  acceptanceCriteria: string;
-  epicId?: string;
-  epicName?: string;
-};
-
-/** Body for updating a single user story (snake_case per API contract). */
-export type UpdateUserStoryDto = {
-  story_points: number;
-  priority: Priority;
-  status: string;
+  epic: string;
+  feature: string;
+  story: string;
   acceptance_criteria: string;
-};
+  story_points: number;
+  priority: string;
+  status: string;
+}
+
+/** Body for updating a user story (`PUT /stories/{id}`). */
+export interface UserStoryUpdate {
+  story?: string | null;
+  acceptance_criteria?: string | null;
+  story_points?: number | null;
+  priority?: string | null;
+  status?: string | null;
+  epic?: string | null;
+  feature?: string | null;
+}
 
 /** Document file classification tile colour. */
 export type DocumentTileTone = "red" | "blue" | "slate";

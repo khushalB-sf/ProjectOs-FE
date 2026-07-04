@@ -28,6 +28,7 @@ export const PLANNER_QUERY_KEYS = {
   SPRINTS: (projectId: string) => ["planner", projectId, "sprints"] as const,
   TASKS: (projectId: string, sprintId?: string) =>
     ["planner", projectId, "tasks", sprintId ?? "all"] as const,
+  TASK_STATUS: (taskId: string) => ["planner", "task-status", taskId] as const,
 };
 
 export const MEETINGS_QUERY_KEYS = {

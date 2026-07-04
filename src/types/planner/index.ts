@@ -1,5 +1,99 @@
 import type { StatusTone } from "@/types/common";
 
+/* -------------------------------------------------------------------------- */
+/* API contract (server wire shapes — snake_case, bare responses)             */
+/* -------------------------------------------------------------------------- */
+
+/** Body for creating a sprint (`POST /projects/{id}/sprints`). */
+export interface SprintCreate {
+  name: string;
+  goal?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  capacity_points?: number;
+}
+
+/** A sprint as returned by the sprints endpoints. */
+export interface SprintResponse {
+  id: string;
+  project_id: string;
+  sprint_number: number;
+  name: string;
+  goal: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  capacity_points: number;
+  committed_points: number;
+  completed_points: number;
+  status: string;
+}
+
+/** Body for creating a task (`POST /projects/{id}/tasks`). */
+export interface TaskCreate {
+  title: string;
+  description?: string | null;
+  priority?: string;
+  task_type?: string;
+  estimated_hours?: number;
+  story_id?: string | null;
+  sprint_id?: string | null;
+  assignee_id?: string | null;
+  due_date?: string | null;
+  suggested_role?: string | null;
+}
+
+/** A task as returned by the tasks endpoints. */
+export interface TaskResponse {
+  id: string;
+  project_id: string;
+  sprint_id: string | null;
+  story_id: string | null;
+  assignee_id: string | null;
+  title: string;
+  description: string | null;
+  status: string;
+  priority: string;
+  task_type: string;
+  estimated_hours: number;
+  actual_hours: number;
+  due_date: string | null;
+  suggested_role: string | null;
+  created_at: string;
+}
+
+/** Body for updating a task (`PUT /tasks/{id}`). */
+export interface TaskUpdate {
+  title?: string | null;
+  description?: string | null;
+  status?: string | null;
+  priority?: string | null;
+  sprint_id?: string | null;
+  assignee_id?: string | null;
+  estimated_hours?: number | null;
+  actual_hours?: number | null;
+  due_date?: string | null;
+}
+
+/** Lifecycle state of an async AI task. */
+export type TaskProgressStatus = "pending" | "running" | "completed" | "failed";
+
+/** Poll result of `GET /tasks/{task_id}` for async AI operations. */
+export interface TaskStatus {
+  task_id: string;
+  type: string;
+  resource_id: string | null;
+  project_id: string | null;
+  status: TaskProgressStatus;
+  progress: string | null;
+  error: string | null;
+  created_at: string;
+  completed_at: string | null;
+}
+
+/* -------------------------------------------------------------------------- */
+/* UI view-models (component-facing shapes, mapped from the API contract)     */
+/* -------------------------------------------------------------------------- */
+
 /** Which board view is currently active. */
 export type PlannerView = "kanban" | "gantt";
 

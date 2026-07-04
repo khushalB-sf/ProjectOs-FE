@@ -1,5 +1,11 @@
 /** UI copy for the Proposal module. All user-visible strings live here. */
 export const PROPOSAL_LABELS = {
+  API: {
+    GENERATE_SUCCESS: "Proposal generation started.",
+    GENERATE_ERROR: "Failed to start proposal generation.",
+    UPDATE_SUCCESS: "Proposal updated successfully.",
+    UPDATE_ERROR: "Failed to update proposal.",
+  },
   HEADER: {
     GENERATED_BADGE: "Generated Jun 22, 2026",
     REVISION_META: "v1.2 — reviewed by Alex",

@@ -1,6 +1,7 @@
 export const NAV_LABELS = {
   BRAND: "ProjectOS",
   CURRENT_PROJECT: "Current Project",
+  NO_PROJECT: "No project selected",
   PROJECT_NAME: "TechFlow Logistics",
   USER_NAME: "Alex Johnson",
   USER_ROLE: "Solutions Architect",
