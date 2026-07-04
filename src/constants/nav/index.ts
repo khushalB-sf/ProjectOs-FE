@@ -68,7 +68,7 @@ export const NAV_ITEMS: NavItemConfig[] = [
     label: "Meetings",
     icon: Video,
     title: "Meeting Intelligence",
-    badge: { label: "2", tone: "medium" },
+    badge: { label: "", tone: "medium" },
   },
   {
     to: ROUTES.RISK,
