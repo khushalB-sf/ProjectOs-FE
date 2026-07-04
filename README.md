@@ -3,7 +3,7 @@
 Enterprise-grade React frontend for ProjectOS. This package currently contains the
 **Design System foundation** — the shared tokens, primitives and layout standards
 that every feature module builds on. Architecture and conventions mirror the
-`SimERP-frontend-reactjs` reference project.
+`ProjectOS-fe` reference project.
 
 ## Tech stack
 

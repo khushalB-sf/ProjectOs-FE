@@ -6,7 +6,6 @@
    Raw primitives referenced by @theme inline.
    Rule: NO component or page file should ever hardcode a hex, rgb, or oklch.
    All values live here and are consumed via Tailwind utilities or var().
-   Reference architecture: SimERP-frontend-reactjs.
    ───────────────────────────────────────────────────────────────────────────── */
 :root {
     /* ── Legacy alias tokens (kept for backward compat / plain CSS) ──────────── */

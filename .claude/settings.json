@@ -1,0 +1,60 @@
+{
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "jq -r '.tool_input.file_path // empty' | xargs -r -I{} npx --no-install prettier --write -- \"{}\" 2>/dev/null || true"
+                    }
+                ]
+            }
+        ],
+        "Notification": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "notify-send 'Claude Code' 'Needs your attention' --icon=dialog-warning --urgency=normal 2>/dev/null || true"
+                    }
+                ]
+            }
+        ],
+        "SubagentStop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "notify-send 'Claude Code' 'Agent step complete' --icon=dialog-information 2>/dev/null || true"
+                    }
+                ]
+            }
+        ],
+        "Stop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "notify-send 'Claude Code' 'Task complete' --icon=dialog-information 2>/dev/null || true"
+                    }
+                ]
+            }
+        ]
+    },
+    "mcpServers": {
+        "github": {
+            "type": "http",
+            "url": "https://api.githubcopilot.com/mcp/"
+        },
+        "figma": {
+            "type": "http",
+            "url": "https://mcp.figma.com/mcp"
+        },
+        "chrome-devtools": {
+            "type": "stdio",
+            "command": "npx",
+            "args": ["chrome-devtools-mcp@1.3.0"]
+        }
+    }
+}
