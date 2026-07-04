@@ -10,19 +10,52 @@ interface TaskCardProps {
   task: KanbanTask;
   /** Render the compact, dimmed "done" style (line-through title). */
   doneStyle?: boolean;
+  columnId?: string;
+  onDragStart?: (taskId: string, columnId: string) => void;
+  onDragEnd?: () => void;
+  onDragOverCard?: () => void;
 }
 
 /**
- * TaskCard — a single kanban card. Adapts its layout for todo, in-progress,
+ * TaskCard — a single kanban card with drag support. Adapts its layout for todo, in-progress,
  * done and blocked tasks based on the fields present on the task.
  */
-function TaskCard({ task, doneStyle }: TaskCardProps) {
+function TaskCard({
+  task,
+  doneStyle,
+  columnId,
+  onDragStart,
+  onDragEnd,
+  onDragOverCard,
+}: TaskCardProps) {
   const isBlocked = Boolean(task.blockedInfo);
+
+  const handleDragStart = (_e: React.DragEvent<HTMLDivElement>) => {
+    if (columnId && onDragStart) {
+      onDragStart(task.id, columnId);
+    }
+  };
+
+  const handleDragEnd = () => {
+    if (onDragEnd) {
+      onDragEnd();
+    }
+  };
+
+  const handleDragOver = (_e: React.DragEvent<HTMLDivElement>) => {
+    if (onDragOverCard) {
+      onDragOverCard();
+    }
+  };
 
   return (
     <div
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
       className={cn(
-        "rounded-lg border border-slate-200 bg-white p-3 shadow-sm",
+        "rounded-lg border border-slate-200 bg-white p-3 shadow-sm cursor-move transition-all hover:shadow-md",
         task.progress !== undefined && "border-l-4 border-l-blue-400",
         doneStyle && "opacity-70",
         isBlocked && "border border-red-300",

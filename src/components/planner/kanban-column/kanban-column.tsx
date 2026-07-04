@@ -10,6 +10,14 @@ import type {
 
 interface KanbanColumnProps {
   column: KanbanColumnType;
+  isDragOver?: boolean;
+  dropPosition?: number;
+  onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragEnter?: () => void;
+  onDrop?: () => void;
+  onTaskDragStart?: (taskId: string, columnId: string) => void;
+  onTaskDragEnd?: () => void;
+  onTaskDragOverCard?: (columnId: string, taskIndex: number) => void;
 }
 
 const DOT_TONE_CLASSES: Record<KanbanDotTone, string> = {
@@ -22,17 +30,31 @@ const DOT_TONE_CLASSES: Record<KanbanDotTone, string> = {
 
 /**
  * KanbanColumn — a single board column: colored dot + uppercase label + count
- * chip, followed by its task cards or a centered empty state.
+ * chip, followed by its task cards or a centered empty state with drag-drop support.
  */
-function KanbanColumn({ column }: KanbanColumnProps) {
+function KanbanColumn({
+  column,
+  isDragOver,
+  dropPosition,
+  onDragOver,
+  onDragEnter,
+  onDrop,
+  onTaskDragStart,
+  onTaskDragEnd,
+  onTaskDragOverCard,
+}: KanbanColumnProps) {
   const isBlockedVariant = column.variant === "blocked";
 
   return (
     <div
       className={cn(
-        "flex min-w-48 flex-1 flex-col rounded-xl bg-slate-50 p-3",
+        "flex min-w-48 flex-1 flex-col rounded-xl bg-slate-50 p-3 transition-colors",
         isBlockedVariant && "border border-red-200 bg-red-50",
+        isDragOver && "bg-indigo-100 ring-2 ring-indigo-400",
       )}
+      onDragOver={onDragOver}
+      onDragEnter={onDragEnter}
+      onDrop={onDrop}
     >
       <div className="mb-3 flex items-center gap-2">
         <span
@@ -57,9 +79,24 @@ function KanbanColumn({ column }: KanbanColumnProps) {
         </div>
       ) : (
         <div className="space-y-2">
-          {column.tasks.map((task) => (
-            <TaskCard key={task.id} task={task} doneStyle={column.doneStyle} />
+          {column.tasks.map((task, index) => (
+            <div key={task.id}>
+              {dropPosition === index && isDragOver && (
+                <div className="mb-1 h-0.5 bg-indigo-500" />
+              )}
+              <TaskCard
+                task={task}
+                doneStyle={column.doneStyle}
+                columnId={column.id}
+                onDragStart={onTaskDragStart}
+                onDragEnd={onTaskDragEnd}
+                onDragOverCard={() => onTaskDragOverCard?.(column.id, index)}
+              />
+            </div>
           ))}
+          {dropPosition === column.tasks.length && isDragOver && (
+            <div className="h-0.5 bg-indigo-500" />
+          )}
         </div>
       )}
     </div>
