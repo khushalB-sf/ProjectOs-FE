@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 
 import type { ChatMessage } from "@/types/assistant";
 import { ChatMarkdown } from "../chat-markdown/chat-markdown";
-import { ChatSources } from "../chat-sources/chat-sources";
 
 const MESSAGE = LABELS.ASSISTANT.MESSAGE;
 
@@ -67,9 +66,6 @@ function ChatMessageItem({ message }: ChatMessageItemProps) {
             </>
           )}
         </div>
-        {!isUser && message.sources && (
-          <ChatSources sources={message.sources} />
-        )}
       </div>
     </div>
   );

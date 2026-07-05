@@ -26,17 +26,7 @@ export const ASSISTANT_LABELS = {
     USER_ARIA: "Your message",
     ASSISTANT_ARIA: "Assistant message",
     THINKING: "Thinking…",
-    SOURCES_TITLE: "Sources",
   },
-  /** Human-readable labels for the retriever's document kinds. */
-  DOC_TYPE: {
-    proposal: "Proposal",
-    rfp_document: "RFP Document",
-    requirement: "Requirement",
-    user_story: "User Story",
-    risk: "Risk",
-    meeting: "Meeting",
-  } as Record<string, string>,
   API: {
     ERROR: "The assistant couldn't respond. Please try again.",
     EMPTY_RESPONSE: "The assistant returned an empty response.",
