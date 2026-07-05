@@ -106,9 +106,11 @@ export const requirementsApi = {
       .then((r) => r.data),
 
   /* User stories */
-  generateStories: (projectId: string): Promise<unknown> =>
+  generateStories: (projectId: string): Promise<DocumentTaskResponse> =>
     api
-      .post<unknown>(ENDPOINTS.REQUIREMENTS.GENERATE_STORIES(projectId))
+      .post<DocumentTaskResponse>(
+        ENDPOINTS.REQUIREMENTS.GENERATE_STORIES(projectId),
+      )
       .then((r) => r.data),
 
   getStories: (projectId: string): Promise<UserStoryResponse[]> =>

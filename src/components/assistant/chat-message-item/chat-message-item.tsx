@@ -4,12 +4,13 @@ import { LABELS } from "@/constants/labels";
 import { cn } from "@/lib/utils";
 
 import type { ChatMessage } from "@/types/assistant";
+import { ChatMarkdown } from "../chat-markdown/chat-markdown";
 import { ChatSources } from "../chat-sources/chat-sources";
 
 const MESSAGE = LABELS.ASSISTANT.MESSAGE;
 
 interface ChatMessageItemProps {
-  message: ChatMessage;
+  readonly message: ChatMessage;
 }
 
 /**
@@ -47,15 +48,19 @@ function ChatMessageItem({ message }: ChatMessageItemProps) {
       >
         <div
           className={cn(
-            "rounded-2xl px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap break-words",
-            isUser ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-900",
+            "rounded-2xl px-3 py-2 text-sm leading-relaxed break-words",
+            isUser
+              ? "bg-indigo-600 whitespace-pre-wrap text-white"
+              : "bg-slate-100 text-slate-900",
           )}
         >
           {isPending ? (
             <span className="text-slate-500">{MESSAGE.THINKING}</span>
+          ) : isUser ? (
+            message.content
           ) : (
             <>
-              {message.content}
+              <ChatMarkdown content={message.content} />
               {message.streaming && (
                 <span className="ml-0.5 inline-block h-4 w-1.5 translate-y-0.5 animate-pulse bg-current align-middle" />
               )}

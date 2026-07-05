@@ -61,5 +61,7 @@ export const ENDPOINTS = {
   ASSISTANT: {
     /** Project-scoped streaming chat. Emits Server-Sent Events (sources → token* → done). */
     CHAT_STREAM: (projectId: string) => `/projects/${projectId}/chat/stream`,
+    /** The caller's persisted chat thread for a project (GET to load, DELETE to clear). */
+    CHAT_HISTORY: (projectId: string) => `/projects/${projectId}/chat/history`,
   },
 } as const;

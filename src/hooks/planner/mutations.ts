@@ -28,15 +28,8 @@ export function useCreateSprint(projectId: string) {
 }
 
 export function useGenerateSprints(projectId: string) {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => plannerApi.generateSprints(projectId),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: PLANNER_QUERY_KEYS.SPRINTS(projectId),
-      });
-      toast.success(LABELS.PLANNER.API.GENERATE_SPRINTS_SUCCESS);
-    },
     onError: (error: Error) => {
       toast.error(
         getErrorMessage(error, LABELS.PLANNER.API.GENERATE_SPRINTS_ERROR),

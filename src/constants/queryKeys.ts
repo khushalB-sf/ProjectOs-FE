@@ -49,3 +49,7 @@ export const RESOURCES_QUERY_KEYS = {
   TEAM: ["resources", "team"] as const,
   UTILIZATION: ["resources", "utilization"] as const,
 };
+
+export const ASSISTANT_QUERY_KEYS = {
+  HISTORY: (projectId: string) => ["assistant", projectId, "history"] as const,
+};

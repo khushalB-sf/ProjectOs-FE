@@ -8,7 +8,8 @@ export const ASSISTANT_LABELS = {
     TITLE: "AI Assistant",
     SUBTITLE: "Ask anything about your projects.",
     CLOSE_ARIA: "Close chat",
-    RESET_ARIA: "Start a new chat",
+    RESET_ARIA: "Clear chat history",
+    LOADING_HISTORY: "Loading your conversation…",
   },
   EMPTY: {
     TITLE: "How can I help?",
@@ -27,8 +28,18 @@ export const ASSISTANT_LABELS = {
     THINKING: "Thinking…",
     SOURCES_TITLE: "Sources",
   },
+  /** Human-readable labels for the retriever's document kinds. */
+  DOC_TYPE: {
+    proposal: "Proposal",
+    rfp_document: "RFP Document",
+    requirement: "Requirement",
+    user_story: "User Story",
+    risk: "Risk",
+    meeting: "Meeting",
+  } as Record<string, string>,
   API: {
     ERROR: "The assistant couldn't respond. Please try again.",
     EMPTY_RESPONSE: "The assistant returned an empty response.",
+    CLEAR_ERROR: "Couldn't clear the chat. Please try again.",
   },
 } as const;

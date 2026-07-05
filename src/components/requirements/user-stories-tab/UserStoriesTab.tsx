@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { LABELS } from "@/constants/labels";
+import { REQUIREMENTS_QUERY_KEYS } from "@/constants/queryKeys";
 import { useProject } from "@/contexts/useProject";
-import { useStories } from "@/hooks/requirements/queries";
+import { useStories, useTaskStatus } from "@/hooks/requirements/queries";
 import { useGenerateStories } from "@/hooks/requirements/mutations";
 import { getErrorMessage } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -19,12 +22,9 @@ import {
 const L = LABELS.REQUIREMENTS.REQUIREMENTS;
 const STATE_L = LABELS.REQUIREMENTS.STATE;
 
-/** How long to keep polling for generated stories after the trigger request succeeds. */
-const GENERATION_POLL_WINDOW_MS = 120_000;
-
 interface GenerateStoriesButtonProps {
-  onGenerate: () => void;
-  isGenerating: boolean;
+  readonly onGenerate: () => void;
+  readonly isGenerating: boolean;
 }
 
 function GenerateStoriesButton({
@@ -49,15 +49,17 @@ function GenerateStoriesButton({
 /** User Stories tab — epics with their nested story cards. */
 function UserStoriesTab() {
   const { projectId } = useProject();
-  const [isPollingForStories, setIsPollingForStories] = useState(false);
-  const {
-    data: stories,
-    isLoading,
-    isError,
-    error,
-  } = useStories(projectId, isPollingForStories);
-  const { mutate: generateStories, isPending: isGeneratingStories } =
+  const queryClient = useQueryClient();
+  const [generationTaskId, setGenerationTaskId] = useState<string | undefined>(
+    undefined,
+  );
+  const { data: stories, isLoading, isError, error } = useStories(projectId);
+  const { mutate: generateStories, isPending: isTriggeringGeneration } =
     useGenerateStories(projectId ?? "");
+  const { data: generationTask } = useTaskStatus(
+    generationTaskId,
+    Boolean(generationTaskId),
+  );
   const [editingStoryId, setEditingStoryId] = useState<string | undefined>(
     undefined,
   );
@@ -67,19 +69,36 @@ function UserStoriesTab() {
     (story: UserStoryResponse) => story.id === editingStoryId,
   );
 
+  const isTaskSettled =
+    generationTask?.status === "completed" ||
+    generationTask?.status === "failed";
+  const isGeneratingStories =
+    isTriggeringGeneration || (Boolean(generationTaskId) && !isTaskSettled);
+
   const handleGenerateStories = () => {
     generateStories(undefined, {
-      onSuccess: () => setIsPollingForStories(true),
+      onSuccess: (task) => setGenerationTaskId(task.task_id),
     });
   };
 
+  // Refresh stories / notify once generation settles — guarded so it fires once per task.
+  const notifiedTaskIdRef = useRef<string | undefined>(undefined);
   useEffect(() => {
-    if (!isPollingForStories) return;
-    const timeoutId = globalThis.setTimeout(() => {
-      setIsPollingForStories(false);
-    }, GENERATION_POLL_WINDOW_MS);
-    return () => globalThis.clearTimeout(timeoutId);
-  }, [isPollingForStories]);
+    if (!generationTask || !isTaskSettled) return;
+    if (notifiedTaskIdRef.current === generationTask.task_id) return;
+    notifiedTaskIdRef.current = generationTask.task_id;
+
+    if (generationTask.status === "completed") {
+      void queryClient.invalidateQueries({
+        queryKey: REQUIREMENTS_QUERY_KEYS.STORIES(projectId ?? ""),
+      });
+      toast.success(LABELS.REQUIREMENTS.API.GENERATE_STORIES_SUCCESS);
+    } else {
+      toast.error(
+        generationTask.error ?? LABELS.REQUIREMENTS.API.GENERATE_STORIES_ERROR,
+      );
+    }
+  }, [generationTask, isTaskSettled, projectId, queryClient]);
 
   if (isLoading) {
     return (
