@@ -9,13 +9,7 @@ export const PLANNER_LABELS = {
     UPDATE_TASK_SUCCESS: "Task updated successfully.",
     UPDATE_TASK_ERROR: "Failed to update task.",
   },
-  VIEW: {
-    KANBAN: "Kanban",
-    GANTT: "Gantt",
-    GANTT_COMING_SOON: "Gantt view coming soon",
-  },
   CONTROLS: {
-    VIEW_TOGGLE_ARIA: "Board view",
     SPRINT_GROUP_ARIA: "Select sprint",
     SPRINT_PREFIX: "Sprint",
     NO_SPRINTS: "No sprints yet",

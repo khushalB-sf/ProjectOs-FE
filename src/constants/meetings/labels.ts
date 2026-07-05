@@ -25,6 +25,12 @@ export const MEETINGS_LABELS = {
       "Select a meeting from the list to view its minutes, action items, and decisions.",
     COPY_MOM_SUCCESS: "Minutes copied to clipboard.",
     COPY_MOM_EMPTY: "No minutes available to copy yet.",
+    PROCESSING_TITLE: "Processing transcript…",
+    PROCESSING_BODY:
+      "AI is generating the minutes, action items, and decisions. This updates automatically.",
+    FAILED_TITLE: "Processing failed",
+    FAILED_BODY:
+      "We couldn't process this transcript. Try reprocessing the meeting.",
   },
   TABS: {
     MINUTES: "Minutes of Meeting",

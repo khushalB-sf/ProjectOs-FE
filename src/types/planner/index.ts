@@ -102,9 +102,6 @@ export interface TaskStatus {
 /* UI view-models (component-facing shapes, mapped from the API contract)     */
 /* -------------------------------------------------------------------------- */
 
-/** Which board view is currently active. */
-export type PlannerView = "kanban" | "gantt";
-
 /** Optional escalation/blocking context attached to a blocked task. */
 export interface BlockedInfo {
   /** Short blocked-duration label (e.g. "52h"). */

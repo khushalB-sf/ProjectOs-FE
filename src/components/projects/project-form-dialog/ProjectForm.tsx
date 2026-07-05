@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { LABELS } from "@/constants/labels";
+import { useProject } from "@/contexts/useProject";
 import { useCreateProject, useUpdateProject } from "@/hooks/projects/mutations";
 import {
   updateProjectSchema,
@@ -85,6 +86,7 @@ function ProjectForm({ project, onSuccess }: ProjectFormProps) {
   });
   const { mutate: createProject, isPending: isCreating } = useCreateProject();
   const { mutate: updateProject, isPending: isUpdating } = useUpdateProject();
+  const { setActiveProjectId } = useProject();
   const isPending = isCreating || isUpdating;
 
   const handleSubmit = form.handleSubmit((values) => {
@@ -97,7 +99,8 @@ function ProjectForm({ project, onSuccess }: ProjectFormProps) {
     }
 
     createProject(toCreateProjectDto(values), {
-      onSuccess: () => {
+      onSuccess: (created) => {
+        setActiveProjectId(created.id);
         form.reset(EMPTY_VALUES);
         onSuccess();
       },
@@ -172,7 +175,7 @@ function ProjectForm({ project, onSuccess }: ProjectFormProps) {
             />
           ) : null}
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 items-start gap-4">
           <FormField
             control={form.control}
             name="start_date"

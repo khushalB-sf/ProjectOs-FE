@@ -33,22 +33,22 @@ function MeetingsPage() {
 
   if (isProjectLoading || isMeetingsLoading) {
     return (
-      <main className="flex min-h-[600px] items-center justify-center bg-slate-50 p-6">
+      <div className="flex min-h-[600px] items-center justify-center">
         <Loader2
           className="size-8 animate-spin text-indigo-600"
           aria-hidden="true"
         />
-      </main>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <main className="flex min-h-[600px] items-center justify-center bg-slate-50 p-6">
+      <div className="flex min-h-[600px] items-center justify-center">
         <p className="text-sm text-red-600">
           {getErrorMessage(error, MEETINGS_LABELS.STATE.ERROR)}
         </p>
-      </main>
+      </div>
     );
   }
 
@@ -87,8 +87,8 @@ function MeetingsPage() {
   };
 
   return (
-    <main className="bg-slate-50 p-6">
-      <div className="flex min-h-[600px] gap-4">
+    <div className="flex min-h-[600px] items-start gap-4">
+      <div className="sticky top-6 max-h-[calc(100vh-9rem)] overflow-y-auto">
         <MeetingList
           meetings={items}
           selectedId={activeId}
@@ -96,9 +96,9 @@ function MeetingsPage() {
           onSelect={handleSelect}
           onNew={() => setIsNewMode(true)}
         />
-        {renderMainPanel()}
       </div>
-    </main>
+      {renderMainPanel()}
+    </div>
   );
 }
 

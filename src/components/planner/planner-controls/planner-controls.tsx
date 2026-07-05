@@ -4,72 +4,32 @@ import { Button } from "@/components/ui/button";
 import { LABELS } from "@/constants/labels";
 import { cn } from "@/lib/utils";
 
-import type { PlannerView, SprintOption } from "@/types/planner";
+import type { SprintOption } from "@/types/planner";
 
 const CONTROLS = LABELS.PLANNER.CONTROLS;
-const VIEW = LABELS.PLANNER.VIEW;
 
 interface PlannerControlsProps {
-  view: PlannerView;
-  sprintOptions: SprintOption[];
+  readonly sprintOptions: SprintOption[];
   /** True while an AI sprint-plan generation is in flight (kickoff + polling window). */
-  isGenerating: boolean;
-  onViewChange: (view: PlannerView) => void;
-  onSelectSprint: (sprintId: string) => void;
-  onNewTask: () => void;
-  onGenerate: () => void;
+  readonly isGenerating: boolean;
+  readonly onSelectSprint: (sprintId: string) => void;
+  readonly onNewTask: () => void;
+  readonly onGenerate: () => void;
 }
 
 /**
- * PlannerControls — the top controls row: Kanban/Gantt view toggle on the left,
- * sprint selector plus New Task and Generate Sprint Plan actions on the right.
+ * PlannerControls — the top controls row: sprint selector plus New Task and
+ * Generate Sprint Plan actions.
  */
 function PlannerControls({
-  view,
   sprintOptions,
   isGenerating,
-  onViewChange,
   onSelectSprint,
   onNewTask,
   onGenerate,
 }: PlannerControlsProps) {
   return (
-    <div className="flex items-center justify-between gap-4">
-      <div
-        className="flex gap-1 rounded-lg bg-slate-200 p-1"
-        role="tablist"
-        aria-label={CONTROLS.VIEW_TOGGLE_ARIA}
-      >
-        <button
-          type="button"
-          role="tab"
-          aria-selected={view === "kanban"}
-          onClick={() => onViewChange("kanban")}
-          className={cn(
-            "rounded-md px-3 py-1 text-sm font-medium transition-colors",
-            view === "kanban"
-              ? "bg-white text-slate-800 shadow-sm"
-              : "text-slate-500",
-          )}
-        >
-          {VIEW.KANBAN}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={view === "gantt"}
-          onClick={() => onViewChange("gantt")}
-          className={cn(
-            "rounded-md px-3 py-1 text-sm font-medium transition-colors",
-            view === "gantt"
-              ? "bg-white text-slate-800 shadow-sm"
-              : "text-slate-500",
-          )}
-        >
-          {VIEW.GANTT}
-        </button>
-      </div>
-
+    <div className="flex items-center justify-end gap-4">
       <div className="flex items-center gap-3">
         <div
           className="flex overflow-hidden rounded-lg border border-slate-200"
