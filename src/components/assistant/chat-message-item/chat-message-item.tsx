@@ -3,8 +3,9 @@ import { Bot, User } from "lucide-react";
 import { LABELS } from "@/constants/labels";
 import { cn } from "@/lib/utils";
 
+import { MarkdownContent } from "@/components/common/markdown/markdown";
+
 import type { ChatMessage } from "@/types/assistant";
-import { ChatMarkdown } from "../chat-markdown/chat-markdown";
 
 const MESSAGE = LABELS.ASSISTANT.MESSAGE;
 
@@ -59,7 +60,7 @@ function ChatMessageItem({ message }: ChatMessageItemProps) {
             message.content
           ) : (
             <>
-              <ChatMarkdown content={message.content} />
+              <MarkdownContent content={message.content} />
               {message.streaming && (
                 <span className="ml-0.5 inline-block h-4 w-1.5 translate-y-0.5 animate-pulse bg-current align-middle" />
               )}

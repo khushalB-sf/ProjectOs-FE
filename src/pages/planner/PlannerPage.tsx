@@ -16,7 +16,7 @@ import { useGenerateSprints } from "@/hooks/planner/mutations";
 import { useSprints, useTaskStatus } from "@/hooks/planner/queries";
 import { getErrorMessage } from "@/lib/utils";
 
-import type { PlannerView, SprintResponse } from "@/types/planner";
+import type { SprintResponse } from "@/types/planner";
 
 const PLANNER = LABELS.PLANNER;
 
@@ -27,7 +27,6 @@ interface PlannerContentProps {
 /** Data-wiring container for a resolved project: sprints, tasks and dialogs. */
 function PlannerContent({ projectId }: PlannerContentProps) {
   const queryClient = useQueryClient();
-  const [view, setView] = useState<PlannerView>("kanban");
   const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
     undefined,
   );
@@ -67,6 +66,8 @@ function PlannerContent({ projectId }: PlannerContentProps) {
         generationTask.error ?? LABELS.PLANNER.API.GENERATE_SPRINTS_ERROR,
       );
     }
+    // The async job has settled — close the generate dialog either way.
+    setIsGenerateDialogOpen(false);
   }, [generationTask, isTaskSettled, projectId, queryClient]);
 
   const sprintList: SprintResponse[] = sprints ?? [];
@@ -104,26 +105,15 @@ function PlannerContent({ projectId }: PlannerContentProps) {
   return (
     <div className="space-y-4">
       <PlannerControls
-        view={view}
         sprintOptions={sprintOptions}
         isGenerating={isGenerating}
-        onViewChange={setView}
         onSelectSprint={setSelectedSprintId}
         onNewTask={() => setIsTaskFormDialogOpen(true)}
         onGenerate={() => setIsGenerateDialogOpen(true)}
       />
       <SprintSummaryBar sprint={activeSprint} />
 
-      {view === "kanban" ? (
-        <KanbanBoard
-          projectId={projectId}
-          selectedSprintId={activeSprint?.id}
-        />
-      ) : (
-        <div className="flex min-h-[420px] items-center justify-center rounded-xl border border-slate-200 bg-white text-sm text-slate-400">
-          {PLANNER.VIEW.GANTT_COMING_SOON}
-        </div>
-      )}
+      <KanbanBoard projectId={projectId} selectedSprintId={activeSprint?.id} />
 
       <GenerateSprintDialog
         open={isGenerateDialogOpen}

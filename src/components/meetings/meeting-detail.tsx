@@ -1,3 +1,4 @@
+import { AlertTriangle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { ActionItemsPanel } from "@/components/meetings/action-items-panel";
@@ -8,11 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LABELS } from "@/constants/labels";
 import { formatDate } from "@/lib/utils";
 
-import type { MeetingResponse } from "@/types/meetings";
+import { isMeetingProcessed, type MeetingResponse } from "@/types/meetings";
 
 const MEETINGS_LABELS = LABELS.MEETINGS;
 
-function TabBadge({ count }: { count: number }) {
+const FAILURE_STATUSES = new Set(["failed", "error"]);
+
+function TabBadge({ count }: { readonly count: number }) {
   return (
     <span className="ml-1.5 inline-flex min-w-4 items-center justify-center rounded-full bg-slate-200 px-1 text-[10px] font-semibold text-slate-600">
       {count}
@@ -21,7 +24,28 @@ function TabBadge({ count }: { count: number }) {
 }
 
 interface MeetingDetailProps {
-  meeting: MeetingResponse | undefined;
+  readonly meeting: MeetingResponse | undefined;
+}
+
+/** Centered status card shown while a meeting is processing or has failed. */
+function DetailStateCard({
+  icon,
+  title,
+  body,
+}: {
+  readonly icon: React.ReactNode;
+  readonly title: string;
+  readonly body: string;
+}) {
+  return (
+    <div className="flex flex-1 items-center justify-center rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+      <div className="flex flex-col items-center">
+        {icon}
+        <p className="mt-3 text-sm font-semibold text-slate-900">{title}</p>
+        <p className="mt-1 max-w-sm text-sm text-slate-400">{body}</p>
+      </div>
+    </div>
+  );
 }
 
 function MeetingDetail({ meeting }: MeetingDetailProps) {
@@ -37,6 +61,37 @@ function MeetingDetail({ meeting }: MeetingDetailProps) {
           </p>
         </div>
       </div>
+    );
+  }
+
+  const hasFailed = FAILURE_STATUSES.has(meeting.status.toLowerCase());
+
+  if (hasFailed) {
+    return (
+      <DetailStateCard
+        icon={
+          <AlertTriangle className="size-8 text-red-500" aria-hidden="true" />
+        }
+        title={MEETINGS_LABELS.DETAIL.FAILED_TITLE}
+        body={MEETINGS_LABELS.DETAIL.FAILED_BODY}
+      />
+    );
+  }
+
+  // Still running through the AI pipeline — the list query keeps polling, so this
+  // resolves to the full detail view automatically once processing completes.
+  if (!isMeetingProcessed(meeting)) {
+    return (
+      <DetailStateCard
+        icon={
+          <Loader2
+            className="size-8 animate-spin text-indigo-600"
+            aria-hidden="true"
+          />
+        }
+        title={MEETINGS_LABELS.DETAIL.PROCESSING_TITLE}
+        body={MEETINGS_LABELS.DETAIL.PROCESSING_BODY}
+      />
     );
   }
 

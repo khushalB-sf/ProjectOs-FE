@@ -1,11 +1,12 @@
+import { MarkdownContent } from "@/components/common/markdown/markdown";
 import { LABELS } from "@/constants/labels";
 import { toAttendeeName } from "@/types/meetings";
 
 const MEETINGS_LABELS = LABELS.MEETINGS;
 
 interface MinutesPanelProps {
-  mom: string | null;
-  attendees: unknown[];
+  readonly mom: string | null;
+  readonly attendees: unknown[];
 }
 
 function MinutesPanel({ mom, attendees }: MinutesPanelProps) {
@@ -23,7 +24,7 @@ function MinutesPanel({ mom, attendees }: MinutesPanelProps) {
       )}
 
       {mom ? (
-        <p className="leading-relaxed whitespace-pre-wrap">{mom}</p>
+        <MarkdownContent content={mom} />
       ) : (
         <p className="text-slate-400">{MEETINGS_LABELS.MINUTES.EMPTY}</p>
       )}

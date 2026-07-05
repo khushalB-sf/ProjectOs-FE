@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { Download, Loader2, Sparkles } from "lucide-react";
+import { Download, Loader2, Pencil, Sparkles } from "lucide-react";
 
-import { AskAiDialog } from "@/components/proposal/ask-ai-dialog/ask-ai-dialog";
 import { StatusBadge } from "@/components/common/status-badge/status-badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,18 +11,26 @@ import {
 import { LABELS } from "@/constants/labels";
 
 import type { StatusTone } from "@/types/common";
+import { AskAiDialog } from "../ask-ai-dialog/ask-ai-dialog";
+import { useState } from "react";
 
-const { HEADER } = LABELS.PROPOSAL;
+const { HEADER, EDIT } = LABELS.PROPOSAL;
 
 interface ProposalHeaderProps {
-  hasProposal: boolean;
-  statusLabel?: string;
-  statusTone?: StatusTone;
-  isGenerating: boolean;
+  readonly hasProposal: boolean;
+  readonly statusLabel?: string;
+  readonly statusTone?: StatusTone;
+  readonly isGenerating: boolean;
   /** False when the project has no requirements — generation is disabled. */
-  canGenerate: boolean;
-  onGenerate: () => void;
-  onExport: () => void;
+  readonly canGenerate: boolean;
+  /** Whether the whole document is currently in edit mode. */
+  readonly isEditing: boolean;
+  /** True while the edited proposal is being saved. */
+  readonly isSaving: boolean;
+  readonly onGenerate: () => void;
+  readonly onExport: () => void;
+  /** Toggles edit mode; when already editing, this acts as "Save". */
+  readonly onToggleEdit: () => void;
   projectId: string;
   projectName?: string;
 }
@@ -36,12 +42,18 @@ function ProposalHeader({
   statusTone,
   isGenerating,
   canGenerate,
+  isEditing,
+  isSaving,
   onGenerate,
   onExport,
+  onToggleEdit,
   projectId,
   projectName,
 }: ProposalHeaderProps) {
   const [isAskAiOpen, setIsAskAiOpen] = useState(false);
+  let editToggleLabel: string = EDIT.EDIT_BUTTON;
+  if (isSaving) editToggleLabel = EDIT.SAVING;
+  else if (isEditing) editToggleLabel = EDIT.SAVE_BUTTON;
 
   return (
     <div className="flex items-center justify-between gap-4">
@@ -51,14 +63,40 @@ function ProposalHeader({
         )}
       </div>
       <div className="flex items-center gap-2">
+        {hasProposal && (
+          <>
+            <Button
+              variant="outline"
+              disabled={!hasProposal}
+              onClick={() => setIsAskAiOpen(true)}
+            >
+              {isGenerating ? (
+                <Loader2 className="animate-spin" aria-hidden="true" />
+              ) : (
+                <Sparkles aria-hidden="true" />
+              )}
+              {isGenerating ? HEADER.EDITING : HEADER.EDIT}
+            </Button>
+            <Button
+              variant={isEditing ? "default" : "outline"}
+              disabled={isSaving}
+              onClick={onToggleEdit}
+              className={isEditing ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+            >
+              {isSaving ? (
+                <Loader2 className="animate-spin" aria-hidden="true" />
+              ) : (
+                <Pencil aria-hidden="true" />
+              )}
+              {editToggleLabel}
+            </Button>
+          </>
+        )}
         <Button
           variant="outline"
-          disabled={!hasProposal}
-          onClick={() => setIsAskAiOpen(true)}
+          disabled={!hasProposal || isEditing}
+          onClick={onExport}
         >
-          {HEADER.EDIT}
-        </Button>
-        <Button variant="outline" disabled={!hasProposal} onClick={onExport}>
           <Download aria-hidden="true" />
           {HEADER.EXPORT}
         </Button>

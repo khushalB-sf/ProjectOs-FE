@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { isAxiosError } from "axios";
 import { FileText, FolderKanban, Loader2 } from "lucide-react";
 
@@ -6,6 +6,7 @@ import { ProposalDocument } from "@/components/proposal/proposal-document/propos
 import { ProposalHeader } from "@/components/proposal/proposal-header/proposal-header";
 import { LABELS } from "@/constants/labels";
 import { useProject } from "@/contexts/useProject";
+import { useUpdateProposal } from "@/hooks/proposal/mutations";
 import { useProposal } from "@/hooks/proposal/queries";
 import { useProposalGeneration } from "@/hooks/proposal/useProposalGeneration";
 import { useRequirements } from "@/hooks/requirements/queries";
@@ -15,6 +16,11 @@ import {
   toProposal,
   type Proposal,
 } from "@/types/proposal";
+import {
+  fromProposalDraft,
+  toProposalDraft,
+  type ProposalDraft,
+} from "@/types/proposal/draft";
 
 const PROPOSAL = LABELS.PROPOSAL;
 
@@ -33,13 +39,15 @@ function isProposalNotGeneratedError(error: unknown): boolean {
 }
 
 interface ProposalBodyProps {
-  proposal: Proposal | null;
-  projectName?: string;
-  isGenerating: boolean;
-  isLoading: boolean;
-  isError: boolean;
-  errorMessage?: string;
-  documentRef: React.RefObject<HTMLDivElement | null>;
+  readonly proposal: Proposal | null;
+  readonly projectName?: string;
+  readonly isGenerating: boolean;
+  readonly isLoading: boolean;
+  readonly isError: boolean;
+  readonly errorMessage?: string;
+  readonly documentRef: React.RefObject<HTMLDivElement | null>;
+  readonly draft?: ProposalDraft;
+  readonly onDraftChange: (draft: ProposalDraft) => void;
 }
 
 /** Resolves which panel to render: document, generating, loading, error, or empty. */
@@ -51,11 +59,18 @@ function ProposalBody({
   isError,
   errorMessage,
   documentRef,
+  draft,
+  onDraftChange,
 }: ProposalBodyProps) {
   if (proposal) {
     return (
       <div ref={documentRef} data-proposal-print>
-        <ProposalDocument proposal={proposal} projectName={projectName} />
+        <ProposalDocument
+          proposal={proposal}
+          projectName={projectName}
+          draft={draft}
+          onDraftChange={onDraftChange}
+        />
       </div>
     );
   }
@@ -105,14 +120,16 @@ function ProposalBody({
 }
 
 interface ProposalContentProps {
-  projectId: string;
-  projectName?: string;
+  readonly projectId: string;
+  readonly projectName?: string;
 }
 
 /** Data-wiring container for a resolved project: proposal fetch, generation, and states. */
 function ProposalContent({ projectId, projectName }: ProposalContentProps) {
   const documentRef = useRef<HTMLDivElement>(null);
+  const [draft, setDraft] = useState<ProposalDraft | undefined>(undefined);
 
+  const updateProposal = useUpdateProposal();
   const { generate, isGenerating } = useProposalGeneration(projectId);
   const {
     data: proposalResponse,
@@ -127,7 +144,7 @@ function ProposalContent({ projectId, projectName }: ProposalContentProps) {
     if (!documentRef.current) return;
     // Native browser print — the print stylesheet in index.css isolates the
     // tagged proposal document so the PDF is a pixel-exact match of the UI.
-    window.print();
+    globalThis.print();
   };
 
   const proposal = proposalResponse ? toProposal(proposalResponse) : null;
@@ -137,6 +154,18 @@ function ProposalContent({ projectId, projectName }: ProposalContentProps) {
   const readyProposal = proposal && !isBackendGenerating ? proposal : null;
   const notGenerated = isError && isProposalNotGeneratedError(error);
 
+  const handleToggleEdit = () => {
+    if (!readyProposal) return;
+    if (!draft) {
+      setDraft(toProposalDraft(readyProposal));
+      return;
+    }
+    updateProposal.mutate(
+      { projectId, data: fromProposalDraft(draft) },
+      { onSuccess: () => setDraft(undefined) },
+    );
+  };
+
   return (
     <div className="space-y-5">
       <ProposalHeader
@@ -145,6 +174,9 @@ function ProposalContent({ projectId, projectName }: ProposalContentProps) {
         statusTone={proposal?.statusTone}
         isGenerating={displayIsGenerating}
         canGenerate={hasRequirements}
+        isEditing={draft !== undefined}
+        isSaving={updateProposal.isPending}
+        onToggleEdit={handleToggleEdit}
         onGenerate={generate}
         onExport={handleExport}
         projectId={projectId}
@@ -161,6 +193,8 @@ function ProposalContent({ projectId, projectName }: ProposalContentProps) {
           isError ? getErrorMessage(error, PROPOSAL.PAGE.LOAD_ERROR) : undefined
         }
         documentRef={documentRef}
+        draft={draft}
+        onDraftChange={setDraft}
       />
     </div>
   );

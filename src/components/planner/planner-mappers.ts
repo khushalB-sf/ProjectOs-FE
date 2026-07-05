@@ -129,7 +129,7 @@ export function toSprintOption(
 ): SprintOption {
   return {
     id: sprint.id,
-    label: `${PLANNER.CONTROLS.SPRINT_PREFIX} ${sprint.sprint_number}: ${sprint.name}`,
+    label: `${sprint.name}`,
     done: isSprintDone(sprint.status),
     active: sprint.id === selectedId,
   };
