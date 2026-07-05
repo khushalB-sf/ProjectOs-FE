@@ -4,6 +4,12 @@ import { Download, Loader2, Sparkles } from "lucide-react";
 import { AskAiDialog } from "@/components/proposal/ask-ai-dialog/ask-ai-dialog";
 import { StatusBadge } from "@/components/common/status-badge/status-badge";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { LABELS } from "@/constants/labels";
 
 import type { StatusTone } from "@/types/common";
@@ -15,6 +21,8 @@ interface ProposalHeaderProps {
   statusLabel?: string;
   statusTone?: StatusTone;
   isGenerating: boolean;
+  /** False when the project has no requirements — generation is disabled. */
+  canGenerate: boolean;
   onGenerate: () => void;
   isExporting: boolean;
   onExport: () => void;
@@ -26,6 +34,7 @@ function ProposalHeader({
   statusLabel,
   statusTone,
   isGenerating,
+  canGenerate,
   onGenerate,
   isExporting,
   onExport,
@@ -60,18 +69,31 @@ function ProposalHeader({
           {isExporting ? HEADER.EXPORTING : HEADER.EXPORT}
         </Button>
         {!hasProposal && (
-          <Button
-            className="bg-slate-900 text-white hover:bg-slate-800"
-            disabled={isGenerating}
-            onClick={onGenerate}
-          >
-            {isGenerating ? (
-              <Loader2 className="animate-spin" aria-hidden="true" />
-            ) : (
-              <Sparkles aria-hidden="true" />
-            )}
-            {isGenerating ? HEADER.GENERATING : HEADER.GENERATE}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                {/* Wrapper keeps hover events alive so the tooltip still shows
+                    while the button is disabled. */}
+                <span>
+                  <Button
+                    className="bg-slate-900 text-white hover:bg-slate-800"
+                    disabled={isGenerating || !canGenerate}
+                    onClick={onGenerate}
+                  >
+                    {isGenerating ? (
+                      <Loader2 className="animate-spin" aria-hidden="true" />
+                    ) : (
+                      <Sparkles aria-hidden="true" />
+                    )}
+                    {isGenerating ? HEADER.GENERATING : HEADER.GENERATE}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              {!canGenerate && (
+                <TooltipContent>{HEADER.GENERATE_DISABLED_HINT}</TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         )}
       </div>
 

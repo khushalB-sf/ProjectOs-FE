@@ -64,6 +64,7 @@ export const RISK_LABELS = {
     EMPTY_TITLE: "No risk score yet",
     EMPTY_BODY: "Run a computation to generate the first risk snapshot.",
     COMPUTE_CTA: "Compute Risk",
+    RETRY_CTA: "Try Again",
   },
   DYNAMIC: {
     SCORE: (score: number, max: number) => `${score}/${max}`,
