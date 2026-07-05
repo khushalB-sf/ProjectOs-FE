@@ -34,6 +34,7 @@ export const ENDPOINTS = {
   PROPOSAL: {
     GENERATE: (projectId: string) => `/projects/${projectId}/proposal/generate`,
     DETAIL: (projectId: string) => `/projects/${projectId}/proposal`,
+    TASK_STATUS: (taskId: string) => `/tasks/${taskId}`,
   },
   PLANNER: {
     SPRINTS: (projectId: string) => `/projects/${projectId}/sprints`,

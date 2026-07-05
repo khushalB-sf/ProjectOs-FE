@@ -31,6 +31,23 @@ export interface ProposalGenerationTask {
   project_id: string;
 }
 
+/** Lifecycle state of an async proposal-generation task. */
+export type ProposalTaskProgress =
+  "pending" | "running" | "completed" | "failed";
+
+/** Poll result of `GET /tasks/{task_id}` for proposal generation. */
+export interface ProposalTaskStatus {
+  task_id: string;
+  type: string;
+  resource_id: string | null;
+  project_id: string | null;
+  status: ProposalTaskProgress;
+  progress: string | null;
+  error: string | null;
+  created_at: string;
+  completed_at: string | null;
+}
+
 /** Body for updating a proposal (`PUT /projects/{id}/proposal`). */
 export interface ProposalUpdate {
   executive_summary?: string | null;

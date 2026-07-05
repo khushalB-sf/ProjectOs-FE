@@ -3,6 +3,8 @@ export const PROPOSAL_LABELS = {
   API: {
     GENERATE_SUCCESS: "Proposal generation started.",
     GENERATE_ERROR: "Failed to start proposal generation.",
+    GENERATE_COMPLETE: "Proposal generated successfully.",
+    GENERATE_FAILED: "Proposal generation failed.",
     UPDATE_SUCCESS: "Proposal updated successfully.",
     UPDATE_ERROR: "Failed to update proposal.",
   },

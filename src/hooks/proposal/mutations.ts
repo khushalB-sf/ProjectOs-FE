@@ -8,15 +8,16 @@ import { getErrorMessage } from "@/lib/utils";
 
 import type { ProposalUpdate } from "@/types/proposal";
 
-/** Triggers async AI proposal generation; poll task status separately. */
+/**
+ * Triggers async AI proposal generation and returns the task handle. The caller
+ * polls the task (`useProposalTask`) and only refetches the proposal once the
+ * task reports `completed` — so we deliberately do NOT invalidate the proposal
+ * here (that would fetch a not-yet-generated proposal).
+ */
 export function useGenerateProposal() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (projectId: string) => proposalApi.generateProposal(projectId),
-    onSuccess: (_result, projectId) => {
-      void queryClient.invalidateQueries({
-        queryKey: PROPOSAL_QUERY_KEYS.DETAIL(projectId),
-      });
+    onSuccess: () => {
       toast.success(LABELS.PROPOSAL.API.GENERATE_SUCCESS);
     },
     onError: (error: Error) => {

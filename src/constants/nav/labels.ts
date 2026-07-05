@@ -7,6 +7,5 @@ export const NAV_LABELS = {
   USER_ROLE: "Solutions Architect",
   LOGOUT: "Log out",
   SUBTITLE: "TechFlow Smart Logistics Platform · Sprint 3 Active",
-  NOTIFICATIONS: "Notifications",
   AI_READY: "AI Ready",
 } as const;
