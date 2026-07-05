@@ -22,6 +22,7 @@ export const PROPOSAL_LABELS = {
     EXPORT_ERROR: "Failed to export proposal as PDF.",
     GENERATE: "Generate Proposal",
     GENERATING: "Generating…",
+    GENERATE_DISABLED_HINT: "Add requirements before generating a proposal.",
   },
   ASK_AI_DIALOG: {
     TITLE: "Ask AI to update proposal",

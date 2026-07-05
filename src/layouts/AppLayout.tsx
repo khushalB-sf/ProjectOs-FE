@@ -1,5 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
+import { AssistantWidget } from "@/components/assistant/assistant-widget/assistant-widget";
 import { AppSidebar } from "@/components/common/app-sidebar/app-sidebar";
 import { AppTopbar } from "@/components/common/app-topbar/app-topbar";
 import { useAuth } from "@/contexts/useAuth";
@@ -40,6 +41,7 @@ function AppLayout() {
           <Outlet />
         </main>
       </div>
+      <AssistantWidget />
     </div>
   );
 }

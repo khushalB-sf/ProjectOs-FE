@@ -26,6 +26,8 @@ function RiskPage() {
     data: latest,
     isLoading: isLatestLoading,
     isError: isLatestError,
+    isFetching: isLatestFetching,
+    refetch: refetchLatest,
   } = useLatestRisk(projectId);
   const { data: history } = useRiskHistory(projectId);
   const { recompute, isRecomputing } = useRecomputeRisk(projectId);
@@ -41,7 +43,30 @@ function RiskPage() {
     );
   }
 
-  if (isLatestError || !latest) {
+  if (isLatestError) {
+    return (
+      <div className="flex min-h-[600px] items-center justify-center">
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+          <p className="text-sm font-semibold text-slate-900">
+            {RISK.STATE.ERROR}
+          </p>
+          <button
+            type="button"
+            onClick={() => void refetchLatest()}
+            disabled={isLatestFetching}
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLatestFetching ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+            ) : null}
+            {RISK.STATE.RETRY_CTA}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!latest) {
     return (
       <div className="flex min-h-[600px] items-center justify-center">
         <div className="rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">

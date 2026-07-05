@@ -9,6 +9,8 @@ export function useLatestRisk(projectId?: string) {
     queryKey: RISK_QUERY_KEYS.LATEST(projectId ?? ""),
     queryFn: () => riskApi.getLatestRisk(projectId!),
     enabled: Boolean(projectId),
+    // Fail fast: on error, surface the message instead of retrying the call.
+    retry: false,
   });
 }
 

@@ -51,4 +51,8 @@ export const ENDPOINTS = {
     UTILIZATION: "/resources/utilization",
     SUGGEST: (projectId: string) => `/projects/${projectId}/resources/suggest`,
   },
+  ASSISTANT: {
+    /** Project-scoped streaming chat. Emits Server-Sent Events (sources → token* → done). */
+    CHAT_STREAM: (projectId: string) => `/projects/${projectId}/chat/stream`,
+  },
 } as const;

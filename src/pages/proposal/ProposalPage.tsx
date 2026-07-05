@@ -9,6 +9,7 @@ import { LABELS } from "@/constants/labels";
 import { useProject } from "@/contexts/useProject";
 import { useGenerateProposal } from "@/hooks/proposal/mutations";
 import { useProposal } from "@/hooks/proposal/queries";
+import { useRequirements } from "@/hooks/requirements/queries";
 import { exportElementToPdf } from "@/lib/pdf";
 import { getErrorMessage } from "@/lib/utils";
 import {
@@ -122,6 +123,8 @@ function ProposalContent({ projectId, projectName }: ProposalContentProps) {
     isError,
     error,
   } = useProposal(projectId);
+  const { data: requirements } = useRequirements(projectId);
+  const hasRequirements = (requirements?.length ?? 0) > 0;
 
   const handleGenerate = () => {
     generateProposal.mutate(projectId);
@@ -155,6 +158,7 @@ function ProposalContent({ projectId, projectName }: ProposalContentProps) {
         statusLabel={proposal?.statusLabel}
         statusTone={proposal?.statusTone}
         isGenerating={displayIsGenerating}
+        canGenerate={hasRequirements}
         onGenerate={handleGenerate}
         isExporting={isExporting}
         onExport={handleExport}

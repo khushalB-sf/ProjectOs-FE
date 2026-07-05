@@ -1,3 +1,4 @@
+import { ASSISTANT_LABELS } from "@/constants/assistant/labels";
 import { AUTH_LABELS } from "@/constants/auth/labels";
 import { DASHBOARD_LABELS } from "@/constants/dashboard/labels";
 import { MEETINGS_LABELS } from "@/constants/meetings/labels";
@@ -40,4 +41,5 @@ export const LABELS = {
   MEETINGS: MEETINGS_LABELS,
   RISK: RISK_LABELS,
   RESOURCES: RESOURCES_LABELS,
+  ASSISTANT: ASSISTANT_LABELS,
 } as const;
