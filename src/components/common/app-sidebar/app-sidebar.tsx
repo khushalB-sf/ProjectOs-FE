@@ -1,6 +1,12 @@
 import { LogOut, Zap } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuth } from "@/contexts/useAuth";
 import { useProject } from "@/contexts/useProject";
@@ -152,14 +158,21 @@ function AppSidebar({ onLogout }: AppSidebarProps) {
             </p>
             <p className="truncate text-xs text-slate-500">{userEmail}</p>
           </div>
-          <button
-            type="button"
-            onClick={onLogout}
-            aria-label={nav.LOGOUT}
-            className="text-slate-500 hover:text-slate-300"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  aria-label={nav.LOGOUT}
+                  className="text-slate-500 hover:text-slate-300"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{nav.LOGOUT}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
     </aside>

@@ -1,6 +1,5 @@
 import { Download, Loader2, Pencil, Sparkles } from "lucide-react";
 
-import { StatusBadge } from "@/components/common/status-badge/status-badge";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -40,8 +39,6 @@ interface ProposalHeaderProps {
 /** Top action row: generation status plus edit / export / generate controls. */
 function ProposalHeader({
   hasProposal,
-  statusLabel,
-  statusTone,
   isGenerating,
   canGenerate,
   isEditing,
@@ -60,11 +57,6 @@ function ProposalHeader({
 
   return (
     <div className="flex items-center justify-between gap-4">
-      <div className="flex items-center gap-3">
-        {statusLabel && statusTone && (
-          <StatusBadge tone={statusTone}>{statusLabel}</StatusBadge>
-        )}
-      </div>
       <div className="flex items-center gap-2">
         {hasProposal && (
           <>
