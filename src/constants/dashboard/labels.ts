@@ -25,9 +25,8 @@ export const DASHBOARD_LABELS = {
     TEAM_SIZE_SUFFIX: "members",
   },
   BURNDOWN: {
-    TITLE: "Sprint Burndown — Sprint 3",
-    SUBTITLE: "Jun 10 – Jun 28, 2026",
-    BADGE: "Behind",
+    TITLE: "Sprint Burndown",
+    SUBTITLE: "Remaining points over the sprint",
     IDEAL: "Ideal Burndown",
     ACTUAL: "Actual Remaining",
   },
@@ -35,10 +34,20 @@ export const DASHBOARD_LABELS = {
     TITLE: "Velocity Trend",
     SUBTITLE: "Points completed per sprint",
   },
-  ACTIVITY: {
-    TITLE: "Recent Activity",
-  },
-  MILESTONES: {
-    TITLE: "Milestones",
+  OVERVIEW: {
+    NO_CLIENT: "No client assigned",
+    NO_DESCRIPTION: "No description added yet.",
+    CREATED_PREFIX: "Created",
+    TIMELINE: "Timeline",
+    NOT_SCHEDULED: "Not scheduled",
+    DUE_TODAY: "Due today",
+    DAYS_REMAINING_TEMPLATE: "{days} days remaining",
+    OVERDUE_TEMPLATE: "Overdue by {days} days",
+    BUDGET: "Budget",
+    DURATION: "Duration",
+    DURATION_TEMPLATE: "{days} days",
+    START: "Start",
+    TARGET_END: "Target end",
+    NOT_AVAILABLE: "—",
   },
 } as const;

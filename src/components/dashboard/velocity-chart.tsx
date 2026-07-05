@@ -8,16 +8,17 @@ import {
   YAxis,
 } from "recharts";
 
-import { VELOCITY_DATA } from "@/constants/dashboard/mock";
 import { LABELS } from "@/constants/labels";
+
+import type { VelocityPoint } from "@/types/dashboard";
 
 const VELOCITY = LABELS.DASHBOARD.VELOCITY;
 
 interface VelocityChartProps {
-  readonly data?: typeof VELOCITY_DATA;
+  readonly data: VelocityPoint[];
 }
 
-function VelocityChart({ data = VELOCITY_DATA }: VelocityChartProps) {
+function VelocityChart({ data }: VelocityChartProps) {
   // Don't render if no data
   if (!data || data.length === 0) {
     return null;

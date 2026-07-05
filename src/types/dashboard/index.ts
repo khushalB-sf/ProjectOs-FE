@@ -38,32 +38,22 @@ export type VelocityPoint = {
   color: string;
 };
 
-/** Semantic color for a recent-activity item icon. */
-export type ActivityTone = "red" | "amber" | "indigo" | "emerald";
-
-/** One recent-activity list item. */
-export type ActivityItem = {
-  id: string;
-  tone: ActivityTone;
-  /** Leading bold fragment of the title. */
-  titleStrong: string;
-  /** Remaining title text after the bold fragment. */
-  titleRest: string;
-  subtitle: string;
-  timestamp: string;
-};
-
-/** One milestone tracker row. */
-export type Milestone = {
-  id: string;
-  label: string;
-  badge: {
-    tone: StatusTone;
-    text: string;
-  };
-  progress: {
-    value: number;
-    fillClassName: string;
-  };
-  date: string;
+/** Display-ready project overview, mapped from the raw Project wire shape. */
+export type ProjectOverviewView = {
+  name: string;
+  statusLabel: string;
+  statusTone: StatusTone;
+  client: string;
+  description: string;
+  createdLabel: string;
+  budgetLabel: string;
+  startLabel: string;
+  endLabel: string;
+  durationLabel: string;
+  /** Caption under the schedule bar (days remaining / overdue / not scheduled). */
+  scheduleCaption: string;
+  /** Whether the project is past its target end date. */
+  isOverdue: boolean;
+  /** Elapsed proportion of the schedule (0–100), or null when not scheduled. */
+  elapsedPercent: number | null;
 };

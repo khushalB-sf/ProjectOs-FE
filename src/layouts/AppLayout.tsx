@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AssistantWidget } from "@/components/assistant/assistant-widget/assistant-widget";
 import { AppSidebar } from "@/components/common/app-sidebar/app-sidebar";
 import { AppTopbar } from "@/components/common/app-topbar/app-topbar";
+import { humanizeProjectStatus } from "@/components/projects/projects-table/projectStatusTone";
 import { useAuth } from "@/contexts/useAuth";
 import { useProject } from "@/contexts/useProject";
 import { LABELS } from "@/constants/labels";
@@ -24,6 +25,11 @@ function AppLayout() {
   );
   const title = active?.title ?? LABELS.NAV.BRAND;
 
+  const subtitle = activeProject
+    ? (activeProject.description ??
+      `${activeProject.name} · ${humanizeProjectStatus(activeProject.status)}`)
+    : LABELS.NAV.SUBTITLE;
+
   const handleLogout = () => {
     logout();
     navigate(ROUTES.LOGIN, { replace: true });
@@ -33,10 +39,7 @@ function AppLayout() {
     <div className="flex h-screen overflow-hidden">
       <AppSidebar onLogout={handleLogout} />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <AppTopbar
-          title={title}
-          subtitle={activeProject?.description ?? LABELS.NAV.SUBTITLE}
-        />
+        <AppTopbar title={title} subtitle={subtitle} />
         <main className="flex-1 overflow-y-auto bg-slate-50 p-6">
           <Outlet />
         </main>

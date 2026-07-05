@@ -10,17 +10,19 @@ import {
   YAxis,
 } from "recharts";
 
-import { StatusBadge } from "@/components/common/status-badge/status-badge";
-import { BURNDOWN_DATA } from "@/constants/dashboard/mock";
 import { LABELS } from "@/constants/labels";
+
+import type { BurndownPoint } from "@/types/dashboard";
 
 const BURNDOWN = LABELS.DASHBOARD.BURNDOWN;
 
 interface BurndownChartProps {
-  readonly data?: typeof BURNDOWN_DATA;
+  readonly data: BurndownPoint[];
+  readonly title: string;
+  readonly subtitle: string;
 }
 
-function BurndownChart({ data = BURNDOWN_DATA }: BurndownChartProps) {
+function BurndownChart({ data, title, subtitle }: BurndownChartProps) {
   // Don't render if no data
   if (!data || data.length === 0) {
     return null;
@@ -28,14 +30,9 @@ function BurndownChart({ data = BURNDOWN_DATA }: BurndownChartProps) {
 
   return (
     <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="mb-4 flex items-start justify-between">
-        <div>
-          <h3 className="text-sm font-semibold text-slate-900">
-            {BURNDOWN.TITLE}
-          </h3>
-          <p className="text-xs text-slate-400">{BURNDOWN.SUBTITLE}</p>
-        </div>
-        <StatusBadge tone="high">{BURNDOWN.BADGE}</StatusBadge>
+      <div className="mb-4">
+        <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+        <p className="text-xs text-slate-400">{subtitle}</p>
       </div>
       <ResponsiveContainer width="100%" height={200}>
         <ComposedChart
