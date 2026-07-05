@@ -3,8 +3,11 @@ export const PROPOSAL_LABELS = {
   API: {
     GENERATE_SUCCESS: "Proposal generation started.",
     GENERATE_ERROR: "Failed to start proposal generation.",
+    GENERATE_COMPLETE: "Proposal generated successfully.",
+    GENERATE_FAILED: "Proposal generation failed.",
     UPDATE_SUCCESS: "Proposal updated successfully.",
     UPDATE_ERROR: "Failed to update proposal.",
+    AI_EDIT_ERROR: "Failed to generate AI changes.",
   },
   PAGE: {
     NO_PROJECT_TITLE: "No project selected",
@@ -30,7 +33,12 @@ export const PROPOSAL_LABELS = {
       "Describe which section or field you'd like AI to update...",
     CANCEL: "Cancel",
     SUBMIT: "Update Proposal",
-    UNAVAILABLE: "AI-assisted editing isn't available yet.",
+    GENERATING: "Generating changes…",
+    PREVIEW_TITLE: "Review AI changes",
+    CHANGE_SUMMARY_LABEL: "Summary of changes",
+    DISCARD: "Discard",
+    CONFIRM: "Confirm",
+    CONFIRMING: "Saving…",
   },
   DOCUMENT: {
     EYEBROW: "Technical Proposal",

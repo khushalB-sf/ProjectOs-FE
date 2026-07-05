@@ -6,8 +6,8 @@ import { ProposalDocument } from "@/components/proposal/proposal-document/propos
 import { ProposalHeader } from "@/components/proposal/proposal-header/proposal-header";
 import { LABELS } from "@/constants/labels";
 import { useProject } from "@/contexts/useProject";
-import { useGenerateProposal } from "@/hooks/proposal/mutations";
 import { useProposal } from "@/hooks/proposal/queries";
+import { useProposalGeneration } from "@/hooks/proposal/useProposalGeneration";
 import { useRequirements } from "@/hooks/requirements/queries";
 import { getErrorMessage } from "@/lib/utils";
 import {
@@ -113,7 +113,7 @@ interface ProposalContentProps {
 function ProposalContent({ projectId, projectName }: ProposalContentProps) {
   const documentRef = useRef<HTMLDivElement>(null);
 
-  const generateProposal = useGenerateProposal();
+  const { generate, isGenerating } = useProposalGeneration(projectId);
   const {
     data: proposalResponse,
     isLoading,
@@ -122,10 +122,6 @@ function ProposalContent({ projectId, projectName }: ProposalContentProps) {
   } = useProposal(projectId);
   const { data: requirements } = useRequirements(projectId);
   const hasRequirements = (requirements?.length ?? 0) > 0;
-
-  const handleGenerate = () => {
-    generateProposal.mutate(projectId);
-  };
 
   const handleExport = () => {
     if (!documentRef.current) return;
@@ -137,7 +133,7 @@ function ProposalContent({ projectId, projectName }: ProposalContentProps) {
   const proposal = proposalResponse ? toProposal(proposalResponse) : null;
   const isBackendGenerating =
     proposal !== null && isProposalInProgress(proposal.status);
-  const displayIsGenerating = generateProposal.isPending || isBackendGenerating;
+  const displayIsGenerating = isGenerating || isBackendGenerating;
   const readyProposal = proposal && !isBackendGenerating ? proposal : null;
   const notGenerated = isError && isProposalNotGeneratedError(error);
 
@@ -149,8 +145,10 @@ function ProposalContent({ projectId, projectName }: ProposalContentProps) {
         statusTone={proposal?.statusTone}
         isGenerating={displayIsGenerating}
         canGenerate={hasRequirements}
-        onGenerate={handleGenerate}
+        onGenerate={generate}
         onExport={handleExport}
+        projectId={projectId}
+        projectName={projectName}
       />
 
       <ProposalBody
