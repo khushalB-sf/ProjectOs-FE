@@ -3,8 +3,11 @@ export const PROPOSAL_LABELS = {
   API: {
     GENERATE_SUCCESS: "Proposal generation started.",
     GENERATE_ERROR: "Failed to start proposal generation.",
+    GENERATE_COMPLETE: "Proposal generated successfully.",
+    GENERATE_FAILED: "Proposal generation failed.",
     UPDATE_SUCCESS: "Proposal updated successfully.",
     UPDATE_ERROR: "Failed to update proposal.",
+    AI_EDIT_ERROR: "Failed to generate AI changes.",
   },
   PAGE: {
     NO_PROJECT_TITLE: "No project selected",
@@ -18,6 +21,8 @@ export const PROPOSAL_LABELS = {
   HEADER: {
     EXPORT: "Export PDF",
     EXPORTING: "Exporting…",
+    EDIT: "AI Edit",
+    EDITING: "Editing…",
     EXPORT_ERROR: "Failed to export proposal as PDF.",
     GENERATE: "Generate Proposal",
     GENERATING: "Generating…",
@@ -50,6 +55,19 @@ export const PROPOSAL_LABELS = {
     RISK_PROBABILITY_PLACEHOLDER: "Probability",
     RISK_MITIGATION_PLACEHOLDER: "Mitigation",
     ADD_RISK: "Add risk",
+  },
+  ASK_AI_DIALOG: {
+    TITLE: "Ask AI to update proposal",
+    DESCRIPTION_PLACEHOLDER:
+      "Describe which section or field you'd like AI to update...",
+    CANCEL: "Cancel",
+    SUBMIT: "Update Proposal",
+    GENERATING: "Generating changes…",
+    PREVIEW_TITLE: "Review AI changes",
+    CHANGE_SUMMARY_LABEL: "Summary of changes",
+    DISCARD: "Discard",
+    CONFIRM: "Confirm",
+    CONFIRMING: "Saving…",
   },
   DOCUMENT: {
     EYEBROW: "Technical Proposal",

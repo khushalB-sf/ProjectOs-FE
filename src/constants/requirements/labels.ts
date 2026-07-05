@@ -78,7 +78,6 @@ export const REQUIREMENTS_LABELS = {
   },
   USER_STORIES: {
     EDIT_ARIA: "Edit user story",
-    COLLAPSE_ARIA: "Toggle epic",
     GIVEN: "Given",
     WHEN: "When",
     THEN: "Then",

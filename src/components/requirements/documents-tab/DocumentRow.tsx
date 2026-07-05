@@ -59,9 +59,8 @@ function DocumentAction({
     );
   }
 
-  return (
-    <span className="text-sm text-indigo-600">{document.actionLabel}</span>
-  );
+  // A processed document has no follow-up action to surface.
+  return null;
 }
 
 /** A single row in the uploaded-documents table. */

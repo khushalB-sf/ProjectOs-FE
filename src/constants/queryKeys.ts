@@ -26,6 +26,7 @@ export const REQUIREMENTS_QUERY_KEYS = {
 
 export const PROPOSAL_QUERY_KEYS = {
   DETAIL: (projectId: string) => ["proposal", projectId] as const,
+  TASK_STATUS: (taskId: string) => ["proposal", "task-status", taskId] as const,
 };
 
 export const PLANNER_QUERY_KEYS = {

@@ -11,6 +11,8 @@ import {
 import { LABELS } from "@/constants/labels";
 
 import type { StatusTone } from "@/types/common";
+import { AskAiDialog } from "../ask-ai-dialog/ask-ai-dialog";
+import { useState } from "react";
 
 const { HEADER, EDIT } = LABELS.PROPOSAL;
 
@@ -29,6 +31,8 @@ interface ProposalHeaderProps {
   readonly onExport: () => void;
   /** Toggles edit mode; when already editing, this acts as "Save". */
   readonly onToggleEdit: () => void;
+  projectId: string;
+  projectName?: string;
 }
 
 /** Top action row: generation status plus edit / export / generate controls. */
@@ -43,7 +47,10 @@ function ProposalHeader({
   onGenerate,
   onExport,
   onToggleEdit,
+  projectId,
+  projectName,
 }: ProposalHeaderProps) {
+  const [isAskAiOpen, setIsAskAiOpen] = useState(false);
   let editToggleLabel: string = EDIT.EDIT_BUTTON;
   if (isSaving) editToggleLabel = EDIT.SAVING;
   else if (isEditing) editToggleLabel = EDIT.SAVE_BUTTON;
@@ -57,19 +64,33 @@ function ProposalHeader({
       </div>
       <div className="flex items-center gap-2">
         {hasProposal && (
-          <Button
-            variant={isEditing ? "default" : "outline"}
-            disabled={isSaving}
-            onClick={onToggleEdit}
-            className={isEditing ? "bg-indigo-600 hover:bg-indigo-700" : ""}
-          >
-            {isSaving ? (
-              <Loader2 className="animate-spin" aria-hidden="true" />
-            ) : (
-              <Pencil aria-hidden="true" />
-            )}
-            {editToggleLabel}
-          </Button>
+          <>
+            <Button
+              variant="outline"
+              disabled={!hasProposal}
+              onClick={() => setIsAskAiOpen(true)}
+            >
+              {isGenerating ? (
+                <Loader2 className="animate-spin" aria-hidden="true" />
+              ) : (
+                <Sparkles aria-hidden="true" />
+              )}
+              {isGenerating ? HEADER.EDITING : HEADER.EDIT}
+            </Button>
+            <Button
+              variant={isEditing ? "default" : "outline"}
+              disabled={isSaving}
+              onClick={onToggleEdit}
+              className={isEditing ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+            >
+              {isSaving ? (
+                <Loader2 className="animate-spin" aria-hidden="true" />
+              ) : (
+                <Pencil aria-hidden="true" />
+              )}
+              {editToggleLabel}
+            </Button>
+          </>
         )}
         <Button
           variant="outline"
@@ -107,6 +128,13 @@ function ProposalHeader({
           </TooltipProvider>
         )}
       </div>
+
+      <AskAiDialog
+        open={isAskAiOpen}
+        onOpenChange={setIsAskAiOpen}
+        projectId={projectId}
+        projectName={projectName}
+      />
     </div>
   );
 }
