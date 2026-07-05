@@ -1,9 +1,12 @@
+import api from "@/services/api";
 import { ENDPOINTS } from "@/constants/endpoints";
 import { ENV } from "@/lib/env";
 import { tokenStorage } from "@/lib/token-storage";
 
 import type {
+  ChatHistoryResponse,
   ChatSource,
+  ClearChatResponse,
   StreamChatHandlers,
   StreamChatRequest,
 } from "@/types/assistant";
@@ -133,4 +136,22 @@ export async function streamChat({
       if (handleEvent(event, handlers, fallbackError)) return;
     }
   }
+}
+
+/** Loads the caller's persisted chat thread for a project (oldest first). */
+export function getChatHistory(
+  projectId: string,
+): Promise<ChatHistoryResponse> {
+  return api
+    .get<ChatHistoryResponse>(ENDPOINTS.ASSISTANT.CHAT_HISTORY(projectId))
+    .then((r) => r.data);
+}
+
+/** Clears the caller's chat thread for a project (leaves the knowledge base intact). */
+export function clearChatHistory(
+  projectId: string,
+): Promise<ClearChatResponse> {
+  return api
+    .delete<ClearChatResponse>(ENDPOINTS.ASSISTANT.CHAT_HISTORY(projectId))
+    .then((r) => r.data);
 }

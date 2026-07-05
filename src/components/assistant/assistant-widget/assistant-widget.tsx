@@ -20,8 +20,15 @@ const LAUNCHER = LABELS.ASSISTANT.LAUNCHER;
 function AssistantWidget() {
   const [open, setOpen] = useState(false);
   const { projectId } = useProject();
-  const { messages, isStreaming, sendMessage, stop, reset } =
-    useAssistantChat(projectId);
+  const {
+    messages,
+    isStreaming,
+    isLoadingHistory,
+    isClearing,
+    sendMessage,
+    stop,
+    reset,
+  } = useAssistantChat(projectId);
 
   return (
     <>
@@ -29,10 +36,12 @@ function AssistantWidget() {
         <ChatWindow
           messages={messages}
           isStreaming={isStreaming}
+          isLoadingHistory={isLoadingHistory}
+          isClearing={isClearing}
           canSend={Boolean(projectId)}
           onSend={(message) => void sendMessage(message)}
           onStop={stop}
-          onReset={reset}
+          onReset={() => void reset()}
           onClose={() => setOpen(false)}
         />
       )}

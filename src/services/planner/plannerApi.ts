@@ -2,6 +2,7 @@ import api from "@/services/api";
 import { ENDPOINTS } from "@/constants/endpoints";
 
 import type {
+  GenerateSprintsResponse,
   SprintCreate,
   SprintResponse,
   TaskCreate,
@@ -25,9 +26,11 @@ export const plannerApi = {
       .post<SprintResponse>(ENDPOINTS.PLANNER.SPRINTS(projectId), data)
       .then((r) => r.data),
 
-  generateSprints: (projectId: string): Promise<unknown> =>
+  generateSprints: (projectId: string): Promise<GenerateSprintsResponse> =>
     api
-      .post<unknown>(ENDPOINTS.PLANNER.GENERATE_SPRINTS(projectId))
+      .post<GenerateSprintsResponse>(
+        ENDPOINTS.PLANNER.GENERATE_SPRINTS(projectId),
+      )
       .then((r) => r.data),
 
   /* Tasks */

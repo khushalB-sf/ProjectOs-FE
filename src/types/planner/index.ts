@@ -74,6 +74,14 @@ export interface TaskUpdate {
   due_date?: string | null;
 }
 
+/** Response from `POST /projects/{id}/sprints/generate` — an async task handle. */
+export interface GenerateSprintsResponse {
+  task_id: string;
+  type: string;
+  status: string;
+  project_id?: string;
+}
+
 /** Lifecycle state of an async AI task. */
 export type TaskProgressStatus = "pending" | "running" | "completed" | "failed";
 

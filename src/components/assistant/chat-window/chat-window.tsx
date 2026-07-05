@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Bot, RotateCcw, X } from "lucide-react";
+import { Bot, Loader2, RotateCcw, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { LABELS } from "@/constants/labels";
@@ -12,14 +12,18 @@ const WINDOW = LABELS.ASSISTANT.WINDOW;
 const EMPTY = LABELS.ASSISTANT.EMPTY;
 
 interface ChatWindowProps {
-  messages: ChatMessage[];
-  isStreaming: boolean;
+  readonly messages: ChatMessage[];
+  readonly isStreaming: boolean;
+  /** True while the persisted thread is being loaded for the active project. */
+  readonly isLoadingHistory: boolean;
+  /** True while the thread is being cleared server-side. */
+  readonly isClearing: boolean;
   /** False when no project is selected — the composer is disabled. */
-  canSend: boolean;
-  onSend: (message: string) => void;
-  onStop: () => void;
-  onReset: () => void;
-  onClose: () => void;
+  readonly canSend: boolean;
+  readonly onSend: (message: string) => void;
+  readonly onStop: () => void;
+  readonly onReset: () => void;
+  readonly onClose: () => void;
 }
 
 /**
@@ -29,6 +33,8 @@ interface ChatWindowProps {
 function ChatWindow({
   messages,
   isStreaming,
+  isLoadingHistory,
+  isClearing,
   canSend,
   onSend,
   onStop,
@@ -73,9 +79,13 @@ function ChatWindow({
           variant="ghost"
           onClick={onReset}
           aria-label={WINDOW.RESET_ARIA}
-          disabled={messages.length === 0}
+          disabled={messages.length === 0 || isClearing || isStreaming}
         >
-          <RotateCcw aria-hidden="true" />
+          {isClearing ? (
+            <Loader2 className="animate-spin" aria-hidden="true" />
+          ) : (
+            <RotateCcw aria-hidden="true" />
+          )}
         </Button>
         <Button
           size="icon-sm"
@@ -91,7 +101,15 @@ function ChatWindow({
         ref={scrollRef}
         className="flex-1 space-y-4 overflow-y-auto px-4 py-4"
       >
-        {messages.length === 0 ? (
+        {isLoadingHistory && messages.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
+            <Loader2
+              className="size-5 animate-spin text-indigo-600"
+              aria-hidden="true"
+            />
+            <p className="text-xs text-slate-500">{WINDOW.LOADING_HISTORY}</p>
+          </div>
+        ) : messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
             <span
               className="mb-3 flex size-12 items-center justify-center rounded-full bg-indigo-50 text-indigo-600"

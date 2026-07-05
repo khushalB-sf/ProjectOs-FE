@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { FolderKanban, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { GenerateSprintDialog } from "@/components/planner/generate-sprint-dialog/generate-sprint-dialog";
 import { KanbanBoard } from "@/components/planner/kanban-board/kanban-board";
@@ -8,48 +10,64 @@ import { toSprintOption } from "@/components/planner/planner-mappers";
 import { SprintSummaryBar } from "@/components/planner/sprint-summary-bar/sprint-summary-bar";
 import { TaskFormDialog } from "@/components/planner/task-form-dialog/TaskFormDialog";
 import { LABELS } from "@/constants/labels";
+import { PLANNER_QUERY_KEYS } from "@/constants/queryKeys";
 import { useProject } from "@/contexts/useProject";
 import { useGenerateSprints } from "@/hooks/planner/mutations";
-import { useSprints } from "@/hooks/planner/queries";
+import { useSprints, useTaskStatus } from "@/hooks/planner/queries";
 import { getErrorMessage } from "@/lib/utils";
 
 import type { PlannerView, SprintResponse } from "@/types/planner";
 
 const PLANNER = LABELS.PLANNER;
 
-/** How long to keep polling sprints after generation kicks off (server processes it async). */
-const GENERATION_POLL_WINDOW_MS = 120_000;
-
 interface PlannerContentProps {
-  projectId: string;
+  readonly projectId: string;
 }
 
 /** Data-wiring container for a resolved project: sprints, tasks and dialogs. */
 function PlannerContent({ projectId }: PlannerContentProps) {
+  const queryClient = useQueryClient();
   const [view, setView] = useState<PlannerView>("kanban");
   const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
     undefined,
   );
   const [isGenerateDialogOpen, setIsGenerateDialogOpen] = useState(false);
   const [isTaskFormDialogOpen, setIsTaskFormDialogOpen] = useState(false);
-  const [isPollingForSprints, setIsPollingForSprints] = useState(false);
+  const [generationTaskId, setGenerationTaskId] = useState<string | undefined>(
+    undefined,
+  );
 
   const generateSprints = useGenerateSprints(projectId);
-  const isGenerating = generateSprints.isPending || isPollingForSprints;
-  const {
-    data: sprints,
-    isLoading,
-    isError,
-    error,
-  } = useSprints(projectId, isGenerating);
+  const { data: generationTask } = useTaskStatus(
+    generationTaskId,
+    Boolean(generationTaskId),
+  );
+  const { data: sprints, isLoading, isError, error } = useSprints(projectId);
 
+  const isTaskSettled =
+    generationTask?.status === "completed" ||
+    generationTask?.status === "failed";
+  const isGenerating =
+    generateSprints.isPending || (Boolean(generationTaskId) && !isTaskSettled);
+
+  // Refresh sprints / notify once generation settles — guarded so it fires once per task.
+  const notifiedTaskIdRef = useRef<string | undefined>(undefined);
   useEffect(() => {
-    if (!isPollingForSprints) return;
-    const timeoutId = globalThis.setTimeout(() => {
-      setIsPollingForSprints(false);
-    }, GENERATION_POLL_WINDOW_MS);
-    return () => globalThis.clearTimeout(timeoutId);
-  }, [isPollingForSprints]);
+    if (!generationTask || !isTaskSettled) return;
+    if (notifiedTaskIdRef.current === generationTask.task_id) return;
+    notifiedTaskIdRef.current = generationTask.task_id;
+
+    if (generationTask.status === "completed") {
+      void queryClient.invalidateQueries({
+        queryKey: PLANNER_QUERY_KEYS.SPRINTS(projectId),
+      });
+      toast.success(LABELS.PLANNER.API.GENERATE_SPRINTS_SUCCESS);
+    } else {
+      toast.error(
+        generationTask.error ?? LABELS.PLANNER.API.GENERATE_SPRINTS_ERROR,
+      );
+    }
+  }, [generationTask, isTaskSettled, projectId, queryClient]);
 
   const sprintList: SprintResponse[] = sprints ?? [];
   const activeSprint =
@@ -61,7 +79,7 @@ function PlannerContent({ projectId }: PlannerContentProps) {
 
   const handleGenerate = () => {
     generateSprints.mutate(undefined, {
-      onSuccess: () => setIsPollingForSprints(true),
+      onSuccess: (task) => setGenerationTaskId(task.task_id),
     });
   };
 

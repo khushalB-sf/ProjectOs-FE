@@ -91,15 +91,8 @@ export function useUpdateRequirement(projectId: string) {
 }
 
 export function useGenerateStories(projectId: string) {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => requirementsApi.generateStories(projectId),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: REQUIREMENTS_QUERY_KEYS.STORIES(projectId),
-      });
-      toast.success(LABELS.REQUIREMENTS.API.GENERATE_STORIES_SUCCESS);
-    },
     onError: (error: Error) => {
       toast.error(
         getErrorMessage(error, LABELS.REQUIREMENTS.API.GENERATE_STORIES_ERROR),

@@ -1,15 +1,22 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { ASSISTANT_CONFIG } from "@/constants/assistant";
 import { LABELS } from "@/constants/labels";
+import { ASSISTANT_QUERY_KEYS } from "@/constants/queryKeys";
 import { getErrorMessage } from "@/lib/utils";
-import { streamChat } from "@/services/assistant/assistantApi";
+import {
+  clearChatHistory,
+  streamChat,
+} from "@/services/assistant/assistantApi";
+import { useChatHistory } from "@/hooks/assistant/queries";
 
-import type {
-  ChatHistoryItem,
-  ChatMessage,
-  ChatSource,
+import {
+  toChatMessage,
+  type ChatHistoryItem,
+  type ChatMessage,
+  type ChatSource,
 } from "@/types/assistant";
 
 const API = LABELS.ASSISTANT.API;
@@ -27,27 +34,54 @@ function toHistory(messages: ChatMessage[]): ChatHistoryItem[] {
 }
 
 /**
- * Owns the assistant conversation state and drives the SSE request. Exposes the
- * message list plus `sendMessage`, `stop`, and `reset`. Sources land on the
- * assistant turn first; streamed tokens are then appended in place.
+ * Owns the assistant conversation for the active project. The persisted thread
+ * (`GET /chat/history`) is the base; turns created this session are held in a
+ * local overlay and rendered after it. The displayed list is *derived* from the
+ * two — no effect syncs server data into local state — so switching projects
+ * simply re-derives from that project's cached history. Reset clears the thread
+ * server-side (`DELETE /chat/history`).
  */
 export function useAssistantChat(projectId: string | undefined) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const queryClient = useQueryClient();
+  const { data: history, isLoading: isLoadingHistory } =
+    useChatHistory(projectId);
+
+  /** Turns added during this session, keyed by project so switching is clean. */
+  const [sessionTurns, setSessionTurns] = useState<
+    Record<string, ChatMessage[]>
+  >({});
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
-  const patchMessage = useCallback(
-    (id: string, patch: (message: ChatMessage) => ChatMessage) => {
-      setMessages((prev) =>
-        prev.map((message) => (message.id === id ? patch(message) : message)),
-      );
+  const messages = useMemo<ChatMessage[]>(() => {
+    const persisted = history?.messages.map(toChatMessage) ?? [];
+    const localTurns = projectId ? (sessionTurns[projectId] ?? []) : [];
+    return [...persisted, ...localTurns];
+  }, [history, projectId, sessionTurns]);
+
+  const setLocalTurns = useCallback(
+    (project: string, update: (prev: ChatMessage[]) => ChatMessage[]) => {
+      setSessionTurns((prev) => ({
+        ...prev,
+        [project]: update(prev[project] ?? []),
+      }));
     },
     [],
   );
 
+  const patchMessage = useCallback(
+    (project: string, id: string, patch: (m: ChatMessage) => ChatMessage) => {
+      setLocalTurns(project, (turns) =>
+        turns.map((message) => (message.id === id ? patch(message) : message)),
+      );
+    },
+    [setLocalTurns],
+  );
+
   const finalize = useCallback(
-    (id: string, error?: string) => {
-      patchMessage(id, (message) => ({
+    (project: string, id: string, error?: string) => {
+      patchMessage(project, id, (message) => ({
         ...message,
         streaming: false,
         content: message.content || error || API.EMPTY_RESPONSE,
@@ -61,10 +95,10 @@ export function useAssistantChat(projectId: string | undefined) {
       const text = raw.trim();
       if (!text || isStreaming || !projectId) return;
 
-      const history = toHistory(messages);
+      const priorHistory = toHistory(messages);
       const assistantId = createId();
-      setMessages((prev) => [
-        ...prev,
+      setLocalTurns(projectId, (turns) => [
+        ...turns,
         { id: createId(), role: "user", content: text },
         { id: assistantId, role: "assistant", content: "", streaming: true },
       ]);
@@ -78,15 +112,18 @@ export function useAssistantChat(projectId: string | undefined) {
           projectId,
           request: {
             message: text,
-            history,
+            history: priorHistory,
             doc_types: ASSISTANT_CONFIG.DEFAULT_DOC_TYPES,
             top_k: ASSISTANT_CONFIG.DEFAULT_TOP_K,
           },
           handlers: {
             onSources: (sources: ChatSource[]) =>
-              patchMessage(assistantId, (message) => ({ ...message, sources })),
+              patchMessage(projectId, assistantId, (message) => ({
+                ...message,
+                sources,
+              })),
             onToken: (delta) =>
-              patchMessage(assistantId, (message) => ({
+              patchMessage(projectId, assistantId, (message) => ({
                 ...message,
                 content: message.content + delta,
               })),
@@ -94,31 +131,53 @@ export function useAssistantChat(projectId: string | undefined) {
           fallbackError: API.ERROR,
           signal: controller.signal,
         });
-        finalize(assistantId);
+        finalize(projectId, assistantId);
       } catch (error) {
         if (controller.signal.aborted) {
-          finalize(assistantId);
+          finalize(projectId, assistantId);
           return;
         }
         const detail = getErrorMessage(error as Error, API.ERROR);
         toast.error(detail);
-        finalize(assistantId, detail);
+        finalize(projectId, assistantId, detail);
       } finally {
         abortRef.current = null;
         setIsStreaming(false);
       }
     },
-    [finalize, isStreaming, messages, patchMessage, projectId],
+    [finalize, isStreaming, messages, patchMessage, projectId, setLocalTurns],
   );
 
   const stop = useCallback(() => {
     abortRef.current?.abort();
   }, []);
 
-  const reset = useCallback(() => {
+  const reset = useCallback(async () => {
+    if (!projectId || isClearing) return;
     abortRef.current?.abort();
-    setMessages([]);
-  }, []);
+    setIsClearing(true);
+    try {
+      await clearChatHistory(projectId);
+      setLocalTurns(projectId, () => []);
+      queryClient.setQueryData(ASSISTANT_QUERY_KEYS.HISTORY(projectId), {
+        project_id: projectId,
+        messages: [],
+      });
+    } catch (error) {
+      toast.error(getErrorMessage(error as Error, API.CLEAR_ERROR));
+    } finally {
+      setIsStreaming(false);
+      setIsClearing(false);
+    }
+  }, [isClearing, projectId, queryClient, setLocalTurns]);
 
-  return { messages, isStreaming, sendMessage, stop, reset };
+  return {
+    messages,
+    isStreaming,
+    isLoadingHistory,
+    isClearing,
+    sendMessage,
+    stop,
+    reset,
+  };
 }

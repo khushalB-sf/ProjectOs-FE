@@ -8,7 +8,8 @@ export const ASSISTANT_LABELS = {
     TITLE: "AI Assistant",
     SUBTITLE: "Ask anything about your projects.",
     CLOSE_ARIA: "Close chat",
-    RESET_ARIA: "Start a new chat",
+    RESET_ARIA: "Clear chat history",
+    LOADING_HISTORY: "Loading your conversation…",
   },
   EMPTY: {
     TITLE: "How can I help?",
@@ -25,10 +26,10 @@ export const ASSISTANT_LABELS = {
     USER_ARIA: "Your message",
     ASSISTANT_ARIA: "Assistant message",
     THINKING: "Thinking…",
-    SOURCES_TITLE: "Sources",
   },
   API: {
     ERROR: "The assistant couldn't respond. Please try again.",
     EMPTY_RESPONSE: "The assistant returned an empty response.",
+    CLEAR_ERROR: "Couldn't clear the chat. Please try again.",
   },
 } as const;
